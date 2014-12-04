@@ -1,6 +1,7 @@
 package com.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.dynamicgrid.DynamicGridView;
+import com.myaddressbook.ActCreatePeople;
 import com.myaddressbook.CheeseDynamicAdapter;
 import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
@@ -123,7 +125,8 @@ public class GroupFragment extends Fragment {
         btn_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(), ActCreatePeople.class);
+                startActivity(intent);
             }
         });
         return view;
