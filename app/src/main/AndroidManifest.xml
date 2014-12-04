@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.myaddressbook" >
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -10,12 +10,21 @@
         <activity
             android:name="com.myaddressbook.MainActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.ActHome"
+            android:label="@string/title_activity_act_home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.myaddressbook.ActCreatePeople"
+            android:label="@string/title_activity_act_create_people" >
+        </activity>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="8cb8049b60042215899a0d7de2f0e6aabf7e2725"/>
     </application>
 
 </manifest>
