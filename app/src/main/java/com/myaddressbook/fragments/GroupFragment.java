@@ -21,6 +21,8 @@ import com.daogenerator.AddressBook;
 import com.dynamicgrid.DynamicGridView;
 import com.myaddressbook.Activities.ActCreatePeople;
 
+import com.myaddressbook.Activities.ActPeopleList;
+import com.myaddressbook.Activities.ActSecond;
 import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.CheeseDynamicAdapter;
@@ -58,6 +60,7 @@ public class GroupFragment extends Fragment {
     private Button btn_newgroup;
     private List<AddressBook> addressBookArrayList;
     private GroupAdapter groupAdapter;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -95,23 +98,32 @@ public class GroupFragment extends Fragment {
         // Inflate the layout for this fragment
 
         //GET 第一層 DATA
-        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList("1");
+        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1,"");
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         gridView = (GridView) view.findViewById(R.id.gridview);
         btn_newpeople = (Button) view.findViewById(R.id.btn_new);
         btn_newgroup = (Button) view.findViewById(R.id.btn_group);
 
-        groupAdapter=new GroupAdapter(getActivity(),addressBookArrayList);
+        groupAdapter = new GroupAdapter(getActivity(), addressBookArrayList);
 
         gridView.setAdapter(groupAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AddressBook addressBook = addressBookArrayList.get(position);
                 //TODO:未分類
+                if (addressBook.getPeopleNo() == "1000000000") {
+                    Intent intent = new Intent(getActivity(), ActPeopleList.class);
+                    intent.putExtra("Level", "2");
+                    startActivity(intent);
+                    return;
+                }
 
-                //TODO:判斷下一層是否有資料
-
-                //TODO:前往不同的ACTIVITY
+                //TODO:判斷下一層是否有資料,前往不同的ACTIVITY
+                Intent secondIntent=new Intent();
+                secondIntent.setClass(getActivity(), ActSecond.class);
+                secondIntent.putExtra("ParentNo",addressBook.getPeopleNo());
+                startActivity(secondIntent);
 
             }
         });
@@ -138,13 +150,13 @@ public class GroupFragment extends Fragment {
                     // insert group to db
                     public void onClick(DialogInterface arg0, int arg1) {
                         String groupname = editText.getText().toString().trim();
-                        boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname,"1","");
-                        if(isSuccess) {
+                        boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 1, "");
+                        if (isSuccess) {
                             addressBookArrayList.clear();
-                            addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList("1"));
+                            addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(1,""));
                             groupAdapter.notifyDataSetChanged();
-                        }else {
-                            Toast.makeText(getActivity(),R.string.toast_text,Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), R.string.toast_text, Toast.LENGTH_SHORT).show();
                         }
 
                     }

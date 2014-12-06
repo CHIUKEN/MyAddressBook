@@ -29,7 +29,7 @@ public class InitializeDaoGenerator {
         entity.addIdProperty().autoincrement().primaryKey();
         entity.addStringProperty("PeopleNo");
         entity.addStringProperty("PeopleName");
-        entity.addStringProperty("LevelNum");
+        entity.addIntProperty("LevelNum");
         entity.addStringProperty("ParentNo");
         entity.addStringProperty("FileName");
         entity.addStringProperty("PeopleTel");

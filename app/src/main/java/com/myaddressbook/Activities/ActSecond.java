@@ -2,18 +2,31 @@ package com.myaddressbook.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 
+import com.daogenerator.AddressBook;
 import com.myaddressbook.R;
+import com.myaddressbook.adapter.GroupAdapter;
+import com.myaddressbook.app.AppController;
+
+import java.util.List;
 
 public class ActSecond extends Activity {
+    private GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_second);
-
+        String parentNo = getIntent().getStringExtra("ParentNo");
+        List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, parentNo);
+        gridView = (GridView) findViewById(R.id.gridview);
+        GroupAdapter groupAdapter = new GroupAdapter(this, addressBookList);
+        gridView.setAdapter(groupAdapter);
+        Log.d("", addressBookList.get(0).getPeopleNo());
     }
 
 

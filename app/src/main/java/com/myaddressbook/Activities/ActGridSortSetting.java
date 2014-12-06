@@ -23,7 +23,7 @@ public class ActGridSortSetting extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_grid_sort_setting);
-        List<AddressBook> addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList("1");
+        List<AddressBook> addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1,"");
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
         gridView.setAdapter(new CheeseDynamicAdapter(this,
                 addressBookArrayList,

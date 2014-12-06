@@ -4,15 +4,29 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 
 import com.myaddressbook.R;
 
 public class ActPeopleList extends Activity {
+    private String Level;
+    private ListView mlistView;
+    private Button btn_newpeople;
+    private Button btn_newgroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_people_list);
+        Level = getIntent().getStringExtra("Level");
+        mlistView = (ListView) findViewById(R.id.listView_people);
+        btn_newpeople = (Button) findViewById(R.id.btn_newpeople);
+        btn_newgroup = (Button) findViewById(R.id.btn_newgroup);
+        if (Level == null) {
+            btn_newgroup.setVisibility(View.GONE);
+        }
     }
 
 

@@ -26,7 +26,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property PeopleNo = new Property(1, String.class, "PeopleNo", false, "PEOPLE_NO");
         public final static Property PeopleName = new Property(2, String.class, "PeopleName", false, "PEOPLE_NAME");
-        public final static Property LevelNum = new Property(3, String.class, "LevelNum", false, "LEVEL_NUM");
+        public final static Property LevelNum = new Property(3, Integer.class, "LevelNum", false, "LEVEL_NUM");
         public final static Property ParentNo = new Property(4, String.class, "ParentNo", false, "PARENT_NO");
         public final static Property FileName = new Property(5, String.class, "FileName", false, "FILE_NAME");
         public final static Property PeopleTel = new Property(6, String.class, "PeopleTel", false, "PEOPLE_TEL");
@@ -58,7 +58,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'PEOPLE_NO' TEXT," + // 1: PeopleNo
                 "'PEOPLE_NAME' TEXT," + // 2: PeopleName
-                "'LEVEL_NUM' TEXT," + // 3: LevelNum
+                "'LEVEL_NUM' INTEGER," + // 3: LevelNum
                 "'PARENT_NO' TEXT," + // 4: ParentNo
                 "'FILE_NAME' TEXT," + // 5: FileName
                 "'PEOPLE_TEL' TEXT," + // 6: PeopleTel
@@ -100,9 +100,9 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
             stmt.bindString(3, PeopleName);
         }
  
-        String LevelNum = entity.getLevelNum();
+        Integer LevelNum = entity.getLevelNum();
         if (LevelNum != null) {
-            stmt.bindString(4, LevelNum);
+            stmt.bindLong(4, LevelNum);
         }
  
         String ParentNo = entity.getParentNo();
@@ -184,7 +184,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // PeopleNo
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // PeopleName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // LevelNum
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // LevelNum
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ParentNo
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // FileName
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // PeopleTel
@@ -208,7 +208,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setPeopleNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setPeopleName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setLevelNum(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setLevelNum(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setParentNo(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setFileName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPeopleTel(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));

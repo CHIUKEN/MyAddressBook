@@ -9,7 +9,7 @@ public class AddressBook {
     private Long id;
     private String PeopleNo;
     private String PeopleName;
-    private String LevelNum;
+    private Integer LevelNum;
     private String ParentNo;
     private String FileName;
     private String PeopleTel;
@@ -31,7 +31,7 @@ public class AddressBook {
         this.id = id;
     }
 
-    public AddressBook(Long id, String PeopleNo, String PeopleName, String LevelNum, String ParentNo, String FileName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId1, String Tag1Name, String TagId2, String Tag2Name, String DisplayColor, String Sort, java.util.Date CreateDate) {
+    public AddressBook(Long id, String PeopleNo, String PeopleName, Integer LevelNum, String ParentNo, String FileName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId1, String Tag1Name, String TagId2, String Tag2Name, String DisplayColor, String Sort, java.util.Date CreateDate) {
         this.id = id;
         this.PeopleNo = PeopleNo;
         this.PeopleName = PeopleName;
@@ -75,11 +75,11 @@ public class AddressBook {
         this.PeopleName = PeopleName;
     }
 
-    public String getLevelNum() {
+    public Integer getLevelNum() {
         return LevelNum;
     }
 
-    public void setLevelNum(String LevelNum) {
+    public void setLevelNum(Integer LevelNum) {
         this.LevelNum = LevelNum;
     }
 

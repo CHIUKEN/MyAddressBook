@@ -30,23 +30,33 @@ public class ActLanch extends Activity {
         setContentView(R.layout.activity_act_lanch);
         getActionBar().hide();
         //新增預設資料夾
-        //家庭
-        AddressBook addressBook = new AddressBook(null, "10000000", "家庭", "1", "", "家庭", "", "", "", "", "", "", "", "","#FFFFFF" ,new Date());
-        //工作
-        AddressBook addressBook2 = new AddressBook(null, "20000000", "工作", "1", "", "工作", "", "", "", "", "", "", "", "","#FFFF77", new Date());
-
-        DaoManager daof= AppController.getInstance().getDaofManger();
-        //insert
-        daof.InsertAddressBook(addressBook);
+        DaoManager daof = AppController.getInstance().getDaofManger();
+       // List<AddressBook>ALL = daof.getall();
+        AddressBook addressBook0 = new AddressBook(null, "1000000000", "未分類", 1, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
+        AddressBook addressBook1 = new AddressBook(null, "1010000000", "未分類", 2, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
+        AddressBook addressBook2 = new AddressBook(null, "1010010000", "未分類", 3, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
+        daof.InsertAddressBook(addressBook0);
+        daof.InsertAddressBook(addressBook1);
         daof.InsertAddressBook(addressBook2);
+//        //家庭
+//        AddressBook addressBook1 = new AddressBook(null, "2000000000", "家庭", "1", "", "家庭", "", "", "", "", "", "", "", "", "#FFFFFF", "1", new Date());
+//        //工作
+//        AddressBook addressBook2 = new AddressBook(null, "3000000000", "工作", "1", "", "工作", "", "", "", "", "", "", "", "", "#FFFF77", "2", new Date());
 
-        List<AddressBook>addressBookList = daof.getAddressBookList("1");
+
+        //insert
+        //daof.InsertAdd("未分類", 1, "");
+        daof.InsertAdd("家庭", 1, "");
+        daof.InsertAdd("工作", 1, "");
+
+
+        List<AddressBook> addressBookList = daof.getAddressBookList(1,"");
         for (AddressBook n : addressBookList) {
             Log.d("Level=1:", n.getPeopleName());
 
         }
         Intent intent = new Intent();
-        intent.setClass(this,ActHome.class);
+        intent.setClass(this, ActHome.class);
         startActivity(intent);
         finish();
     }
