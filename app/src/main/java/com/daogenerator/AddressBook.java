@@ -16,8 +16,12 @@ public class AddressBook {
     private String PeoplePhone;
     private String PeopleEmail;
     private String PeopleNote;
-    private String TagId;
-    private String TagName;
+    private String TagId1;
+    private String Tag1Name;
+    private String TagId2;
+    private String Tag2Name;
+    private String DisplayColor;
+    private String Sort;
     private java.util.Date CreateDate;
 
     public AddressBook() {
@@ -27,7 +31,7 @@ public class AddressBook {
         this.id = id;
     }
 
-    public AddressBook(Long id, String PeopleNo, String PeopleName, String LevelNum, String ParentNo, String FileName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId, String TagName, java.util.Date CreateDate) {
+    public AddressBook(Long id, String PeopleNo, String PeopleName, String LevelNum, String ParentNo, String FileName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId1, String Tag1Name, String TagId2, String Tag2Name, String DisplayColor, String Sort, java.util.Date CreateDate) {
         this.id = id;
         this.PeopleNo = PeopleNo;
         this.PeopleName = PeopleName;
@@ -38,8 +42,12 @@ public class AddressBook {
         this.PeoplePhone = PeoplePhone;
         this.PeopleEmail = PeopleEmail;
         this.PeopleNote = PeopleNote;
-        this.TagId = TagId;
-        this.TagName = TagName;
+        this.TagId1 = TagId1;
+        this.Tag1Name = Tag1Name;
+        this.TagId2 = TagId2;
+        this.Tag2Name = Tag2Name;
+        this.DisplayColor = DisplayColor;
+        this.Sort = Sort;
         this.CreateDate = CreateDate;
     }
 
@@ -123,20 +131,52 @@ public class AddressBook {
         this.PeopleNote = PeopleNote;
     }
 
-    public String getTagId() {
-        return TagId;
+    public String getTagId1() {
+        return TagId1;
     }
 
-    public void setTagId(String TagId) {
-        this.TagId = TagId;
+    public void setTagId1(String TagId1) {
+        this.TagId1 = TagId1;
     }
 
-    public String getTagName() {
-        return TagName;
+    public String getTag1Name() {
+        return Tag1Name;
     }
 
-    public void setTagName(String TagName) {
-        this.TagName = TagName;
+    public void setTag1Name(String Tag1Name) {
+        this.Tag1Name = Tag1Name;
+    }
+
+    public String getTagId2() {
+        return TagId2;
+    }
+
+    public void setTagId2(String TagId2) {
+        this.TagId2 = TagId2;
+    }
+
+    public String getTag2Name() {
+        return Tag2Name;
+    }
+
+    public void setTag2Name(String Tag2Name) {
+        this.Tag2Name = Tag2Name;
+    }
+
+    public String getDisplayColor() {
+        return DisplayColor;
+    }
+
+    public void setDisplayColor(String DisplayColor) {
+        this.DisplayColor = DisplayColor;
+    }
+
+    public String getSort() {
+        return Sort;
+    }
+
+    public void setSort(String Sort) {
+        this.Sort = Sort;
     }
 
     public java.util.Date getCreateDate() {

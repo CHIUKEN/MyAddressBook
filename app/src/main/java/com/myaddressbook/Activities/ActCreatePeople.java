@@ -1,4 +1,4 @@
-package com.myaddressbook;
+package com.myaddressbook.Activities;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -16,8 +16,9 @@ import android.widget.ListView;
 
 import android.widget.SimpleCursorAdapter;
 
-import com.Model.Contacts;
-import com.adapter.NewPeopleAdapter;
+import com.myaddressbook.Model.Contacts;
+import com.myaddressbook.R;
+import com.myaddressbook.adapter.NewPeopleAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

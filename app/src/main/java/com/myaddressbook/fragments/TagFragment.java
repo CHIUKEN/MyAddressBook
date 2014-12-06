@@ -1,4 +1,4 @@
-package com.fragments;
+package com.myaddressbook.fragments;
 
 import android.app.Activity;
 import android.net.Uri;

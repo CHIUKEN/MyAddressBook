@@ -15,6 +15,7 @@ public class InitializeDaoGenerator {
         Schema schema = new Schema(1, "com.daogenerator");
 
         addAddressBook(schema);
+        addTag(schema);
         //addCustomerOrder(schema);
         //自動生成項目檔案路徑
         new DaoGenerator().generateAll(schema,"./app/src/main/java");
@@ -35,14 +36,27 @@ public class InitializeDaoGenerator {
         entity.addStringProperty("PeoplePhone");
         entity.addStringProperty("PeopleEmail");
         entity.addStringProperty("PeopleNote");
-        entity.addStringProperty("TagId");
-        entity.addStringProperty("TagName");
+        entity.addStringProperty("TagId1");
+        entity.addStringProperty("Tag1Name");
+        entity.addStringProperty("TagId2");
+        entity.addStringProperty("Tag2Name");
+        entity.addStringProperty("DisplayColor");
+        entity.addStringProperty("Sort");
         entity.addDateProperty("CreateDate");
         //entity.addIntProperty("");
 
 
     }
+    private static void addTag(Schema schema){
+        //table名稱
+        Entity entity = schema.addEntity("Tag");
+        //欄位
+        //DB自增值，KEY
+        entity.addIdProperty().autoincrement().primaryKey();
+        entity.addStringProperty("TagId");
+        entity.addStringProperty("TagName");
 
+    }
     private static void addCustomerOrder(Schema schema) {
         Entity customer = schema.addEntity("Customer");
         customer.addIdProperty();

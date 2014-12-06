@@ -2,17 +2,29 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_new_people"
-        android:id="@+id/btn_new" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
-    <com.dynamicgrid.DynamicGridView
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_new_people"
+            android:id="@+id/btn_new" />
 
-        android:id="@+id/dynamic_grid"
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_new_group"
+            android:id="@+id/btn_group" />
+    </LinearLayout>
+
+    <GridView
+
+        android:id="@+id/gridview"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:numColumns="@integer/column_count"
-        />
+        android:listSelector="@drawable/grid_item_color_bg" />
 </LinearLayout>

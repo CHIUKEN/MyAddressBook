@@ -1,4 +1,4 @@
-package com.myaddressbook;
+package com.myaddressbook.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,29 +7,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
+import com.daogenerator.AddressBook;
 import com.dynamicgrid.DynamicGridView;
+import com.myaddressbook.R;
 import com.myaddressbook.adapter.CheeseDynamicAdapter;
+import com.myaddressbook.app.AppController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-
-public class MainActivity extends Activity {
-    private static final String TAG = MainActivity.class.getName();
-
+public class ActGridSortSetting extends Activity {
+    private static final String TAG = ActGridSortSetting.class.getName();
     private DynamicGridView gridView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_grid);
+        setContentView(R.layout.activity_act_grid_sort_setting);
+        List<AddressBook> addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList("1");
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
-//        gridView.setAdapter(new CheeseDynamicAdapter(this,
-//                new ArrayList<String>(Arrays.asList(Cheeses.sCheeseStrings)),
-//                getResources().getInteger(R.integer.column_count)));
+        gridView.setAdapter(new CheeseDynamicAdapter(this,
+                addressBookArrayList,
+                getResources().getInteger(R.integer.column_count)));
 
+        //
 //        add callback to stop edit mode if needed
 //        gridView.setOnDropListener(new DynamicGridView.OnDropListener()
 //        {
@@ -61,27 +61,16 @@ public class MainActivity extends Activity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, parent.getAdapter().getItem(position).toString(),
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (gridView.isEditMode()) {
-            gridView.stopEditMode();
-        } else {
-            super.onBackPressed();
-        }
-
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_act_grid_sort_setting, menu);
         return true;
     }
 

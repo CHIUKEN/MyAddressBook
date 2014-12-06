@@ -1,27 +1,37 @@
-package com.fragments;
+package com.myaddressbook.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Toast;
 
+import com.daogenerator.AddressBook;
 import com.dynamicgrid.DynamicGridView;
-import com.myaddressbook.ActCreatePeople;
-import com.myaddressbook.CheeseDynamicAdapter;
+import com.myaddressbook.Activities.ActCreatePeople;
+
 import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
+import com.myaddressbook.adapter.CheeseDynamicAdapter;
+import com.myaddressbook.adapter.GroupAdapter;
+import com.myaddressbook.app.AppController;
+import com.myaddressbook.util.DaoManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,9 +53,11 @@ public class GroupFragment extends Fragment {
     private String mParam2;
 
     //private OnFragmentInteractionListener mListener;
-    private DynamicGridView gridView;
-    private Button btn_new;
-
+    private GridView gridView;
+    private Button btn_newpeople;
+    private Button btn_newgroup;
+    private List<AddressBook> addressBookArrayList;
+    private GroupAdapter groupAdapter;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -81,52 +93,68 @@ public class GroupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        //GET 第一層 DATA
+        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList("1");
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        gridView = (DynamicGridView) view.findViewById(R.id.dynamic_grid);
-        btn_new = (Button) view.findViewById(R.id.btn_new);
-        gridView.setAdapter(new CheeseDynamicAdapter(getActivity(),
-                new ArrayList<String>(Arrays.asList(Cheeses.sCheeseStrings)),
-                getResources().getInteger(R.integer.column_count)));
-//        add callback to stop edit mode if needed
-//        gridView.setOnDropListener(new DynamicGridView.OnDropListener()
-//        {
-//            @Override
-//            public void onActionDrop()
-//            {
-//                gridView.stopEditMode();
-//            }
-//        });
-        gridView.setOnDragListener(new DynamicGridView.OnDragListener() {
-            @Override
-            public void onDragStarted(int position) {
-                Log.d(TAG, "drag started at position " + position);
-            }
+        gridView = (GridView) view.findViewById(R.id.gridview);
+        btn_newpeople = (Button) view.findViewById(R.id.btn_new);
+        btn_newgroup = (Button) view.findViewById(R.id.btn_group);
 
-            @Override
-            public void onDragPositionsChanged(int oldPosition, int newPosition) {
-                Log.d(TAG, String.format("drag item position changed from %d to %d", oldPosition, newPosition));
-            }
-        });
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                gridView.startEditMode(position);
-                return true;
-            }
-        });
+        groupAdapter=new GroupAdapter(getActivity(),addressBookArrayList);
 
+        gridView.setAdapter(groupAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO:未分類
+
+                //TODO:判斷下一層是否有資料
+
+                //TODO:前往不同的ACTIVITY
 
             }
         });
         //新增聯絡人
-        btn_new.setOnClickListener(new View.OnClickListener() {
+        btn_newpeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ActCreatePeople.class);
                 startActivity(intent);
+            }
+        });
+        //新增群組
+        btn_newgroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder editDialog = new AlertDialog.Builder(getActivity());
+                editDialog.setTitle(R.string.btn_new_group);
+
+                final EditText editText = new EditText(getActivity());
+                editText.setHint(R.string.edit_hint_text);
+                editDialog.setView(editText);
+
+                editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
+                    // insert group to db
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        String groupname = editText.getText().toString().trim();
+                        boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname,"1","");
+                        if(isSuccess) {
+                            addressBookArrayList.clear();
+                            addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList("1"));
+                            groupAdapter.notifyDataSetChanged();
+                        }else {
+                            Toast.makeText(getActivity(),R.string.toast_text,Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                editDialog.setNegativeButton(R.string.alert_cancal, new DialogInterface.OnClickListener() {
+                    // cancel
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+                editDialog.show();
             }
         });
         return view;

@@ -1,4 +1,4 @@
-package com.adapter;
+package com.myaddressbook.adapter;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.myaddressbook.R;

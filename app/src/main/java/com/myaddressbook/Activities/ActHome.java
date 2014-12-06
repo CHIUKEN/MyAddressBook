@@ -1,4 +1,4 @@
-package com.myaddressbook;
+package com.myaddressbook.Activities;
 
 import android.app.Activity;
 
@@ -8,27 +8,19 @@ import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.SearchView;
-import android.widget.TextView;
 
-import com.fragments.GroupFragment;
-import com.fragments.TagFragment;
+import com.myaddressbook.fragments.GroupFragment;
+import com.myaddressbook.fragments.TagFragment;
 
 import java.util.List;
-import io.fabric.sdk.android.Fabric;
-import com.crashlytics.android.Crashlytics;
+import com.myaddressbook.NavigationDrawerFragment;
+import com.myaddressbook.R;
 
 public class ActHome extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, SearchView.OnQueryTextListener {
@@ -48,7 +40,7 @@ public class ActHome extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_home);
-        Fabric.with(this, new Crashlytics());
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -145,7 +137,7 @@ public class ActHome extends Activity
 
         mSearchView.setOnQueryTextListener(this);
     }
-
+    //是否開啟側邊欄
     protected boolean isAlwaysExpanded() {
         return false;
     }

@@ -1,4 +1,4 @@
-package com.Model;
+package com.myaddressbook.Model;
 
 /**
  * Created by K on 2014/12/4.

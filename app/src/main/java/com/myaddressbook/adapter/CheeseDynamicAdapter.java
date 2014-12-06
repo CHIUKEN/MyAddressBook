@@ -1,5 +1,7 @@
-package com.myaddressbook;
+package com.myaddressbook.adapter;
 import android.content.Context;
+import android.graphics.Color;
+import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.daogenerator.AddressBook;
 import com.dynamicgrid.BaseDynamicGridAdapter;
+import com.myaddressbook.R;
 
 import java.util.List;
 
@@ -17,7 +21,7 @@ import java.util.List;
  * Time: 10:56 PM
  */
 public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
-    public CheeseDynamicAdapter(Context context, List<?> items, int columnCount) {
+    public CheeseDynamicAdapter(Context context, List<AddressBook> items, int columnCount) {
         super(context, items, columnCount);
     }
 
@@ -31,7 +35,9 @@ public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
         } else {
             holder = (CheeseViewHolder) convertView.getTag();
         }
-        holder.build(getItem(position).toString());
+        AddressBook addressBook=(AddressBook)getItem(position);
+        holder.build(addressBook.getPeopleName(),addressBook.getDisplayColor());
+       // convertView.setBackgroundColor(Color.parseColor(addressBook.getDisplayColor()));
         return convertView;
     }
 
@@ -44,9 +50,10 @@ public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
             image = (ImageView) view.findViewById(R.id.item_img);
         }
 
-        void build(String title) {
+        void build(String title,String color) {
             titleText.setText(title);
             image.setImageResource(R.drawable.ic_launcher);
+            image.setBackgroundColor(Color.parseColor(color));
         }
     }
 }
