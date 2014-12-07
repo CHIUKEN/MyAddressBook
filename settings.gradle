@@ -1,1 +1,1 @@
-include ':app', ':daogenerator', ':dynamicgrid'
+include ':app', ':daogenerator', ':dynamicgrid', ':gc.materialdesign'

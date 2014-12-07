@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
 import com.dynamicgrid.DynamicGridView;
+import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.views.MaterialEditText;
+import com.gc.materialdesign.widgets.Dialog;
 import com.myaddressbook.Activities.ActCreatePeople;
 
 import com.myaddressbook.Activities.ActPeopleList;
@@ -56,7 +59,7 @@ public class GroupFragment extends Fragment {
 
     //private OnFragmentInteractionListener mListener;
     private GridView gridView;
-    private Button btn_newpeople;
+    private ButtonRectangle btn_newpeople;
     private Button btn_newgroup;
     private List<AddressBook> addressBookArrayList;
     private GroupAdapter groupAdapter;
@@ -93,7 +96,7 @@ public class GroupFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -101,7 +104,7 @@ public class GroupFragment extends Fragment {
         addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1,"");
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         gridView = (GridView) view.findViewById(R.id.gridview);
-        btn_newpeople = (Button) view.findViewById(R.id.btn_new);
+        btn_newpeople = (ButtonRectangle) view.findViewById(R.id.btn_new);
         btn_newgroup = (Button) view.findViewById(R.id.btn_group);
 
         groupAdapter = new GroupAdapter(getActivity(), addressBookArrayList);
@@ -142,14 +145,28 @@ public class GroupFragment extends Fragment {
                 AlertDialog.Builder editDialog = new AlertDialog.Builder(getActivity());
                 editDialog.setTitle(R.string.btn_new_group);
 
-                final EditText editText = new EditText(getActivity());
+                final MaterialEditText editText=new MaterialEditText(getActivity());
+                //final EditText editText = new EditText(getActivity());
                 editText.setHint(R.string.edit_hint_text);
+                editText.setSingleLineEllipsis(true);
+                editText.setMaxCharacters(10);
+                editText.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
+                editText.setFloatingLabelText("pabdfafaf");
+                editText.setBaseColor(getResources().getColor(R.color.base_color));
+                editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
+                editText.setErrorColor(getResources().getColor(R.color.error_color));
+                editText.setPaddings(30,30,30,30);
+                editText.setTextSize(18);
                 editDialog.setView(editText);
 
                 editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
                     // insert group to db
                     public void onClick(DialogInterface arg0, int arg1) {
                         String groupname = editText.getText().toString().trim();
+                        if(groupname.length()>10){
+                            Toast.makeText(getActivity(),R.string.toast_edit_error,Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 1, "");
                         if (isSuccess) {
                             addressBookArrayList.clear();
@@ -168,6 +185,8 @@ public class GroupFragment extends Fragment {
                     }
                 });
                 editDialog.show();
+
+
             }
         });
         return view;

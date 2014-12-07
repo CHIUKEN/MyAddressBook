@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/daogenerator" />
             <option value="$PROJECT_DIR$/dynamicgrid" />
+            <option value="$PROJECT_DIR$/gc.materialdesign" />
           </set>
         </option>
       </GradleProjectSettings>

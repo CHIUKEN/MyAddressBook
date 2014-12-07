@@ -28,7 +28,8 @@
 
 
     <string name="edit_group_name">群組名稱</string>
-    <string name="edit_hint_text">請輸入群組名稱</string>
+    <string name="edit_hint_text">請輸入群組名稱，最多10個字</string>
+    <string name="toast_edit_error">最多輸入10個字</string>
     <string name="toast_error">新增失敗！已有相同群組名稱</string>
     <string name="toast_success">新增成功</string>
     <string name="alert_submit">確認</string>

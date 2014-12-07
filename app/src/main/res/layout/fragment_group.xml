@@ -1,30 +1,52 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/layout">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_new_people"
-            android:id="@+id/btn_new" />
+
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_new_group"
             android:id="@+id/btn_group" />
-    </LinearLayout>
 
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btn_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#CC0000"
+            android:text="Button" />
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="false"
+        android:background="#1E88E5"
+        android:layout_below="@+id/layout" />
     <GridView
 
         android:id="@+id/gridview"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:numColumns="@integer/column_count"
-        android:listSelector="@drawable/grid_item_color_bg" />
-</LinearLayout>
+        android:listSelector="@drawable/grid_item_color_bg"
+        android:layout_below="@+id/layout" />
+    <com.gc.materialdesign.views.ButtonFloat
+        android:id="@+id/buttonFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="24dp"
+        android:background="#1E88E5"
+        materialdesign:animate="true"
+        materialdesign:iconDrawable="@drawable/ic_action_new" />
+</RelativeLayout>
