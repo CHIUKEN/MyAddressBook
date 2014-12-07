@@ -11,14 +11,15 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <!--<activity-->
-            <!--android:name="com.myaddressbook.MainActivity"-->
-            <!--android:label="@string/app_name" >-->
-        <!--</activity>-->
+
+        <!-- <activity -->
+        <!-- android:name="com.myaddressbook.MainActivity" -->
+        <!-- android:label="@string/app_name" > -->
+        <!-- </activity> -->
         <activity
             android:name="com.myaddressbook.Activities.ActLanch"
-            android:theme="@style/AppTheme"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,6 +54,18 @@
         <activity
             android:name="com.myaddressbook.Activities.ActGridSortSetting"
             android:label="@string/title_activity_act_grid_sort_setting" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.Activities.ActListSortSetting"
+            android:label="@string/title_activity_act_list_sort_setting" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.TestActivity"
+            android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.ListActivity"
+            android:label="@string/title_activity_list" >
         </activity>
     </application>
 
