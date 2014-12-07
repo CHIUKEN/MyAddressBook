@@ -151,7 +151,7 @@ public class GroupFragment extends Fragment {
                 editText.setSingleLineEllipsis(true);
                 editText.setMaxCharacters(10);
                 editText.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
-                editText.setFloatingLabelText("pabdfafaf");
+
                 editText.setBaseColor(getResources().getColor(R.color.base_color));
                 editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
                 editText.setErrorColor(getResources().getColor(R.color.error_color));
