@@ -45,14 +45,14 @@ public class DaoManager {
         query.where(AddressBookDao.Properties.PeopleName.eq(addressBook.getPeopleName()),
                 AddressBookDao.Properties.LevelNum.eq(addressBook.getLevelNum()),
                 AddressBookDao.Properties.ParentNo.eq(addressBook.getParentNo()));
-        Log.d(Tag, "getPeopleNo:"+addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
+        // Log.d(Tag, "getPeopleNo:"+addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
 
         if (query.list().size() == 0) {
-            Log.d(Tag, "Insert:---getPeopleNo:"+addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
+            Log.d(Tag, "Insert:---getPeopleNo:" + addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
             addressBookDao.insert(addressBook);
             return true;
-        }else {
-            Log.d(Tag, "getPeopleNo:"+addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
+        } else {
+            Log.d(Tag, "No Insert  getPeopleNo:" + addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
             return false;
 
         }
@@ -61,7 +61,8 @@ public class DaoManager {
     //建立群組
     public boolean InsertAdd(String groupname, int level, String parentNo) {
         QueryBuilder<AddressBook> queryBuilder = getAddressBookQuery();
-        queryBuilder.where(AddressBookDao.Properties.LevelNum.eq(level)).orderDesc(AddressBookDao.Properties.CreateDate).limit(1).unique();
+        queryBuilder.where(AddressBookDao.Properties.LevelNum.eq(level))
+                .orderDesc(AddressBookDao.Properties.CreateDate).limit(1).unique();
         //取得最大的peopleNo
         int size = queryBuilder.list().size();
         AddressBook addressBook = queryBuilder.list().get(size - 1);
@@ -77,49 +78,52 @@ public class DaoManager {
         } else if (level == 3) {
             id = 10000;
         }
+
         String peopleNo = String.valueOf(Long.parseLong(addressBook.getPeopleNo()) + id);
-
-        if (level == 1) {
-            //新增二三層
-            String parent = InsertChildren(2, peopleNo);
-            InsertChildren(3, parent);
-        }
-        if (level == 2) {
-            //新增第三層
-            InsertChildren(3, peopleNo);
-        }
-
         //insert
         AddressBook addressBook1 = new AddressBook(null, peopleNo, groupname, level, parentNo, groupname, "", "", "", "", "", "", "", "", "#00DD00", String.valueOf(size), new Date());
-        return InsertAddressBook(addressBook1);
-    }
+        boolean isSuccess=InsertAddressBook(addressBook1);
 
-    private String InsertChildren(int level, String parentNo) {
-        QueryBuilder<AddressBook> queryBuilder = getAddressBookQuery();
-        queryBuilder.where(AddressBookDao.Properties.LevelNum.eq(level)).orderDesc(AddressBookDao.Properties.CreateDate).limit(1).unique();
-        //取得最大的peopleNo
-        int size = queryBuilder.list().size();
-        //取得該層級最後的id
-
-        AddressBook addressBook = queryBuilder.list().get(size - 1);
-
-        int id = 0;
-        //建立第一層群組
-        if (level == 1) {
-            id = 1000000000;
-            //建立第二層群組
-        } else if (level == 2) {
-            id = 10000000;
-            //建立第三層群組
-        } else if (level == 3) {
-            id = 10000;
+        if(isSuccess) {
+            if (level == 1) {
+                //新增二三層
+                String parent = insertChildren(2, peopleNo);
+                insertChildren(3, parent);
+            }
+            if (level == 2) {
+                //新增第三層
+                insertChildren(3, peopleNo);
+            }
         }
-        String peopleNo = String.valueOf(Long.parseLong(addressBook.getPeopleNo()) + id);
-        //insert
-        AddressBook addressBook1 = new AddressBook(null, peopleNo, "不分類", level, parentNo, "不分類", "", "", "", "", "", "", "", "", "#770077", String.valueOf(size), new Date());
-        InsertAddressBook(addressBook1);
-        return peopleNo;
+
+        return isSuccess;
     }
+
+
+    public String insertChildren(int level, String parentNo) {
+        QueryBuilder<AddressBook> queryBuilder = getAddressBookQuery();
+        queryBuilder.where(AddressBookDao.Properties.LevelNum.eq(level), AddressBookDao.Properties.ParentNo.eq(parentNo))
+                .orderDesc(AddressBookDao.Properties.CreateDate).limit(1).unique();
+        long childId = 0;
+        //在該群組內已有子項目
+        if (queryBuilder.list().size() > 0) {
+            if(level==2) {
+                childId = Long.parseLong(queryBuilder.list().get(0).getPeopleNo()) + 10000000;
+            }else{
+                childId = Long.parseLong(queryBuilder.list().get(0).getPeopleNo()) + 10000;
+            }
+        } else {
+            if(level==2) {
+                childId = Long.parseLong(parentNo) + 10000000;
+            }else{
+                childId = Long.parseLong(parentNo) + 10000;
+            }
+        }
+        AddressBook addressBook = new AddressBook(null, String.valueOf(childId), "未分類", level, parentNo, "未分類", "", "", "", "", "", "", "", "", "#770077", "1", new Date());
+        InsertAddressBook(addressBook);
+        return addressBook.getPeopleNo();
+    }
+
 
 
     //新增Tag

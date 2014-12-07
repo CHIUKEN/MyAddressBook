@@ -31,10 +31,10 @@ public class ActLanch extends Activity {
         getActionBar().hide();
         //新增預設資料夾
         DaoManager daof = AppController.getInstance().getDaofManger();
-       // List<AddressBook>ALL = daof.getall();
+       //
         AddressBook addressBook0 = new AddressBook(null, "1000000000", "未分類", 1, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
-        AddressBook addressBook1 = new AddressBook(null, "1010000000", "未分類", 2, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
-        AddressBook addressBook2 = new AddressBook(null, "1010010000", "未分類", 3, "", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
+        AddressBook addressBook1 = new AddressBook(null, "1010000000", "未分類", 2, "1000000000", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
+        AddressBook addressBook2 = new AddressBook(null, "1010010000", "未分類", 3, "1010000000", "", "", "", "", "", "", "", "", "", "#770077", "0", new Date());
         daof.InsertAddressBook(addressBook0);
         daof.InsertAddressBook(addressBook1);
         daof.InsertAddressBook(addressBook2);
@@ -49,10 +49,10 @@ public class ActLanch extends Activity {
         daof.InsertAdd("家庭", 1, "");
         daof.InsertAdd("工作", 1, "");
 
+        List<AddressBook>ALL = daof.getall();
 
-        List<AddressBook> addressBookList = daof.getAddressBookList(1,"");
-        for (AddressBook n : addressBookList) {
-            Log.d("Level=1:", n.getPeopleName());
+        for (AddressBook n : ALL) {
+            Log.d("db all data:","getPeopleNo():"+n.getPeopleNo()+"getLevelNum():"+ n.getLevelNum()+"getParentNo"+n.getParentNo());
 
         }
         Intent intent = new Intent();

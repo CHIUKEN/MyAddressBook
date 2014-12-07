@@ -155,8 +155,9 @@ public class GroupFragment extends Fragment {
                             addressBookArrayList.clear();
                             addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(1,""));
                             groupAdapter.notifyDataSetChanged();
+                            Toast.makeText(getActivity(), R.string.toast_success, Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getActivity(), R.string.toast_text, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.toast_error, Toast.LENGTH_SHORT).show();
                         }
 
                     }
