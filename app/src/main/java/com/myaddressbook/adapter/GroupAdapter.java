@@ -1,7 +1,10 @@
 package com.myaddressbook.adapter;
 
 import android.app.Activity;
+
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +14,25 @@ import android.widget.TextView;
 
 import com.daogenerator.AddressBook;
 import com.myaddressbook.R;
+import com.myaddressbook.TextDrawable;
+import com.myaddressbook.util.Utils;
 
 import java.util.List;
 
 /**
  * Created by K on 2014/12/6.
  */
-public class GroupAdapter extends BaseAdapter{
-    private List<AddressBook>mAddressbookList;
+public class GroupAdapter extends BaseAdapter {
+    private List<AddressBook> mAddressbookList;
     private Activity activity;
     private LayoutInflater inflater;
-    public GroupAdapter(Activity activity,List<AddressBook>addressBookList){
-        this.activity=activity;
-        this.mAddressbookList=addressBookList;
-        inflater=LayoutInflater.from(activity);
+
+    public GroupAdapter(Activity activity, List<AddressBook> addressBookList) {
+        this.activity = activity;
+        this.mAddressbookList = addressBookList;
+        inflater = LayoutInflater.from(activity);
     }
+
     @Override
     public int getCount() {
         return mAddressbookList.size();
@@ -51,8 +58,9 @@ public class GroupAdapter extends BaseAdapter{
         } else {
             holder = (CheeseViewHolder) convertView.getTag();
         }
-        AddressBook addressBook=(AddressBook)getItem(position);
-        holder.build(addressBook.getPeopleName(),addressBook.getDisplayColor());
+        AddressBook addressBook = (AddressBook) getItem(position);
+        holder.build(addressBook.getPeopleName(), addressBook.getDisplayColor());
+
         // convertView.setBackgroundColor(Color.parseColor(addressBook.getDisplayColor()));
         return convertView;
 
@@ -63,16 +71,22 @@ public class GroupAdapter extends BaseAdapter{
     private class CheeseViewHolder {
         private TextView titleText;
         private ImageView image;
-
+        private Drawable drawable;
         private CheeseViewHolder(View view) {
             titleText = (TextView) view.findViewById(R.id.item_title);
             image = (ImageView) view.findViewById(R.id.item_img);
+
         }
 
-        void build(String title,String color) {
+        void build(String title, String color) {
             titleText.setText(title);
-            image.setImageResource(R.drawable.ic_launcher);
-            image.setBackgroundColor(Color.parseColor(color));
+
+            drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .withBorder(Utils.toPx(activity, 2))
+                    .endConfig()
+                    .buildRoundRect("", Color.parseColor(color), Utils.toPx(activity, 10));
+            image.setImageDrawable(drawable);
         }
     }
 }

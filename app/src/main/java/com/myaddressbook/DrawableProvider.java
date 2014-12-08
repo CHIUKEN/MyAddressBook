@@ -78,7 +78,7 @@ public class DrawableProvider {
     }
 
     public TextDrawable getRectWithMultiLetter() {
-        String text = "AK";
+        String text = "家庭工作長達\n十個字了";
         return TextDrawable.builder()
                 .beginConfig()
                 .fontSize(toPx(20))

@@ -1,6 +1,9 @@
 package com.myaddressbook.Activities;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -19,6 +22,7 @@ import android.widget.SimpleCursorAdapter;
 import com.myaddressbook.Model.Contacts;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.NewPeopleAdapter;
+import com.myaddressbook.app.AppController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +31,14 @@ import static android.provider.ContactsContract.*;
 import static android.provider.ContactsContract.CommonDataKinds.*;
 
 
-public class ActCreatePeople extends Activity {
+public class ActCreatePeople extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static String Tag = ActCreatePeople.class.getName();
     private ListView mlistView;
-    private SimpleCursorAdapter mAdapter;
-    private NewPeopleAdapter mNewPeopleAdapter;
+    private NewPeopleAdapter mAdapter;
+    //private NewPeopleAdapter mNewPeopleAdapter;
     private List<Contacts> contactsList;
+    private LoaderManager loaderManager;
+    private Uri uri = Phone.CONTENT_URI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,45 +48,48 @@ public class ActCreatePeople extends Activity {
         setContentView(R.layout.activity_act_create_people);
         mlistView = (ListView) findViewById(R.id.listView_new);
         contactsList = new ArrayList<Contacts>();
+        loaderManager = getLoaderManager();
+        loaderManager.initLoader(0, null, this);
+
         //顯示欄位
         String[] fields = new String[]{
                 Data.DISPLAY_NAME, Phone.NUMBER,
         };
 
         Cursor cursor = getContacts();
-        mAdapter = new SimpleCursorAdapter(this, R.layout.item_newpeople, cursor,
+        mAdapter = new NewPeopleAdapter(this, R.layout.item_newpeople, cursor,
                 fields, new int[]{R.id.txt_name, R.id.txtphone}, 0);
 
-        mNewPeopleAdapter = new NewPeopleAdapter(this, cursor, 0);
+        //mNewPeopleAdapter = new NewPeopleAdapter(this, cursor, 0);
 
-        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //add list
+//        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //add list
+//
+//                Cursor c = (Cursor) mAdapter.getItem(position);
+//                Contacts contacts = new Contacts();
+//                contacts.setContactsPhone(c.getString(c.getColumnIndex(Phone.NUMBER)));
+//                contacts.setContactsName(c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+//
+//                if (isSelected(contacts)) {
+//                    contactsList.remove(contacts);
+//                } else {
+//                    contactsList.add(contacts);
+//                }
+//                Log.i(Tag, String.valueOf(contactsList.size()));
+//            }
+//        });
 
-                Cursor c = (Cursor) mAdapter.getItem(position);
-                Contacts contacts = new Contacts();
-                contacts.setContactsPhone(c.getString(c.getColumnIndex(Phone.NUMBER)));
-                contacts.setContactsName(c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+        mlistView.setAdapter(mAdapter);
 
-                if (isSelected(contacts)) {
-                    contactsList.remove(contacts);
-                } else {
-                    contactsList.add(contacts);
-                }
-                Log.i(Tag, String.valueOf(contactsList.size()));
-            }
-        });
-
-        //mlistView.setAdapter(mAdapter);
-        mlistView.setAdapter(mNewPeopleAdapter);
     }
 
     /*
     * Get Cursor
     * */
     private Cursor getContacts() {
-        Uri uri = Phone.CONTENT_URI;// ContactsContract.Contacts.CONTENT_URI;
+        uri = Phone.CONTENT_URI;// ContactsContract.Contacts.CONTENT_URI;
         //篩選條件
         String[] projection = new String[]{
                 ContactsContract.Contacts.Data._ID,
@@ -94,13 +103,8 @@ public class ActCreatePeople extends Activity {
         String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " DESC";
         return getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
     }
-    /*
-    判斷是否存在
-    * */
-    private boolean isSelected(Contacts userName) {
-        int index = contactsList.indexOf(userName);
-        return !(index == -1);
-    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -113,16 +117,33 @@ public class ActCreatePeople extends Activity {
 
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         //全選
         if (id == R.id.action_all) {
+            contactsList = AppController.getInstance().getContactsList();
+            Cursor cursor = mAdapter.getCursor();
+            if (cursor.moveToFirst()) {
+                do {
+                    try {
+                        Contacts contacts = new Contacts();
+                        contacts.setContactsName(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
+                        contacts.setContactsPhone(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        if (!contactsList.contains(contacts)) {
+                            contactsList.add(contacts);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } while (cursor.moveToNext());
+            }
+            mAdapter.notifyDataSetChanged();
+
             return true;
         }
         //確認
         if (id == R.id.action_ok) {
+            //TODO:Insert to db
+            contactsList = mAdapter.getSelectedItems();
+
             return true;
         }
         if (id == android.R.id.home) {
@@ -133,5 +154,41 @@ public class ActCreatePeople extends Activity {
     }
 
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = new String[]{
+                ContactsContract.Contacts.Data._ID,
+                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                Phone.NUMBER, Email._ID};
 
+        String selection = null;
+        String[] selectionArgs = null;
+        //排序
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " DESC";
+        CursorLoader cursorLoader = new CursorLoader(this, Phone.CONTENT_URI, projection, selection, selectionArgs,
+                sortOrder);
+
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        if (mAdapter == null) {
+            //顯示欄位
+            String[] fields = new String[]{
+                    Data.DISPLAY_NAME, Phone.NUMBER,
+            };
+            mAdapter = new NewPeopleAdapter(getApplicationContext(), R.layout.item_newpeople, cursor,
+                    fields, new int[]{R.id.txt_name, R.id.txtphone}, 0);
+            mlistView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swapCursor(cursor);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        mAdapter.swapCursor(null);
+    }
 }

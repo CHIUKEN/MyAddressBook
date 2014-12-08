@@ -7,4 +7,5 @@
     <color name="base_color">#0056d3</color>
     <color name="primaryColor">#982360</color>
     <color name="blue">#1E88E5</color>
+    <color name="item_color">#cccccc</color>
 </resources>
