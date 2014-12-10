@@ -31,8 +31,13 @@
     <string name="alert_submit">確認</string>
     <string name="alert_cancal">取消</string>
     <string name="hit_text">尚未新增群組或聯絡人資訊</string>
+
     <string name="title_activity_act_list_sort_setting">ActListSortSetting</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_list">ListActivity</string>
 
+    <string name="no_data">尚未加入名單</string>
+
+    <string name="toast_insertpeople_success">新增成功!</string>
+    <string name="btn_callphone">打電話</string>
 </resources>

@@ -58,11 +58,12 @@ public class GroupFragment extends Fragment {
     private String mParam2;
 
     //private OnFragmentInteractionListener mListener;
-    private GridView gridView;
-    private ButtonRectangle btn_newpeople;
-    private Button btn_newgroup;
+    private GridView mGridView;
+    private ButtonRectangle mBtn_newpeople;
+    private Button mBtn_newgroup;
     private List<AddressBook> addressBookArrayList;
     private GroupAdapter groupAdapter;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -101,51 +102,77 @@ public class GroupFragment extends Fragment {
         // Inflate the layout for this fragment
 
         //GET 第一層 DATA
-        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1,"");
+        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1, "");
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        gridView = (GridView) view.findViewById(R.id.gridview);
-        btn_newpeople = (ButtonRectangle) view.findViewById(R.id.btn_new);
-        btn_newgroup = (Button) view.findViewById(R.id.btn_group);
+        mGridView = (GridView) view.findViewById(R.id.gridview);
+        mBtn_newpeople = (ButtonRectangle) view.findViewById(R.id.btn_new);
+        mBtn_newgroup = (Button) view.findViewById(R.id.btn_group);
 
         groupAdapter = new GroupAdapter(getActivity(), addressBookArrayList);
 
-        gridView.setAdapter(groupAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setAdapter(groupAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AddressBook addressBook = addressBookArrayList.get(position);
                 //TODO:未分類
-                if (addressBook.getPeopleNo() == "1000000000") {
+                if (addressBook.getPeopleNo().equals("1000000000")) {
                     Intent intent = new Intent(getActivity(), ActPeopleList.class);
-                    intent.putExtra("Level", "2");
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("Level", 1);
+                    intent.putExtra("ParentNo", "1000000000");
+                    intent.putExtra("ParentName", "未分類");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                     return;
                 }
 
                 //TODO:判斷下一層是否有資料,前往不同的ACTIVITY
-                Intent secondIntent=new Intent();
-                secondIntent.setClass(getActivity(), ActSecond.class);
-                secondIntent.putExtra("ParentNo",addressBook.getPeopleNo());
-                startActivity(secondIntent);
+                List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, "1000000000");
+                if (addressBookList.size() > 1) {
+                    //下一層級
+                    Intent secondIntent = new Intent();
+                    secondIntent.setClass(getActivity(), ActSecond.class);
+                    secondIntent.putExtra("ParentNo", addressBook.getPeopleNo());
+                    startActivity(secondIntent);
+                } else {
+                    //名單頁
+                    Intent people = new Intent();
+                    people.setClass(getActivity(), ActPeopleList.class);
+                    people.putExtra("ParentNo", addressBook.getPeopleNo());
+                    people.putExtra("ParentName", addressBook.getPeopleName());
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("Level", 1);
+                    people.putExtras(bundle);
+                    startActivity(people);
+                }
 
             }
         });
         //新增聯絡人
-        btn_newpeople.setOnClickListener(new View.OnClickListener() {
+        mBtn_newpeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(getActivity(), ActCreatePeople.class);
+                Bundle bundle = new Bundle();
+                //傳目前所在的層級
+                bundle.putInt("Level", 1);
+
+                intent.putExtra("ParentNo", "1000000000");
+                intent.putExtra("ParentName", "未分類");
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
         //新增群組
-        btn_newgroup.setOnClickListener(new View.OnClickListener() {
+        mBtn_newgroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder editDialog = new AlertDialog.Builder(getActivity());
                 editDialog.setTitle(R.string.btn_new_group);
 
-                final MaterialEditText editText=new MaterialEditText(getActivity());
+                final MaterialEditText editText = new MaterialEditText(getActivity());
                 //final EditText editText = new EditText(getActivity());
                 editText.setHint(R.string.edit_hint_text);
                 editText.setSingleLineEllipsis(true);
@@ -155,7 +182,7 @@ public class GroupFragment extends Fragment {
                 editText.setBaseColor(getResources().getColor(R.color.base_color));
                 editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
                 editText.setErrorColor(getResources().getColor(R.color.error_color));
-                editText.setPaddings(30,30,30,30);
+                editText.setPaddings(30, 30, 30, 30);
                 editText.setTextSize(18);
                 editDialog.setView(editText);
 
@@ -163,14 +190,14 @@ public class GroupFragment extends Fragment {
                     // insert group to db
                     public void onClick(DialogInterface arg0, int arg1) {
                         String groupname = editText.getText().toString().trim();
-                        if(groupname.length()>10){
-                            Toast.makeText(getActivity(),R.string.toast_edit_error,Toast.LENGTH_SHORT).show();
+                        if (groupname.length() > 10) {
+                            Toast.makeText(getActivity(), R.string.toast_edit_error, Toast.LENGTH_SHORT).show();
                             return;
                         }
                         boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 1, "");
                         if (isSuccess) {
                             addressBookArrayList.clear();
-                            addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(1,""));
+                            addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(1, ""));
                             groupAdapter.notifyDataSetChanged();
                             Toast.makeText(getActivity(), R.string.toast_success, Toast.LENGTH_SHORT).show();
                         } else {

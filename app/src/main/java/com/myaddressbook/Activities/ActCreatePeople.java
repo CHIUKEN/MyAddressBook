@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -18,11 +19,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.myaddressbook.Model.Contacts;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.NewPeopleAdapter;
 import com.myaddressbook.app.AppController;
+import com.myaddressbook.util.DaoManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +39,12 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
     private ListView mlistView;
     private NewPeopleAdapter mAdapter;
     //private NewPeopleAdapter mNewPeopleAdapter;
-    private List<Contacts> contactsList;
-    private LoaderManager loaderManager;
+    private List<Contacts> mContactsList;
+    private LoaderManager mloaderManager;
     private Uri uri = Phone.CONTENT_URI;
+    private int mlevel;
+    private String mParentNo;
+    private String mParentName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +53,12 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_act_create_people);
         mlistView = (ListView) findViewById(R.id.listView_new);
-        contactsList = new ArrayList<Contacts>();
-        loaderManager = getLoaderManager();
-        loaderManager.initLoader(0, null, this);
-
+        mContactsList = new ArrayList<Contacts>();
+        mloaderManager = getLoaderManager();
+        mloaderManager.initLoader(0, null, this);
+        mlevel = getIntent().getIntExtra("Level", -1);
+        mParentNo = getIntent().getStringExtra("ParentNo");
+        mParentName = getIntent().getStringExtra("ParentName");
         //顯示欄位
         String[] fields = new String[]{
                 Data.DISPLAY_NAME, Phone.NUMBER,
@@ -119,7 +127,7 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
 
         //全選
         if (id == R.id.action_all) {
-            contactsList = AppController.getInstance().getContactsList();
+            mContactsList = AppController.getInstance().getContactsList();
             Cursor cursor = mAdapter.getCursor();
             if (cursor.moveToFirst()) {
                 do {
@@ -127,8 +135,8 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
                         Contacts contacts = new Contacts();
                         contacts.setContactsName(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
                         contacts.setContactsPhone(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                        if (!contactsList.contains(contacts)) {
-                            contactsList.add(contacts);
+                        if (!mContactsList.contains(contacts)) {
+                            mContactsList.add(contacts);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -142,8 +150,11 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         //確認
         if (id == R.id.action_ok) {
             //TODO:Insert to db
-            contactsList = mAdapter.getSelectedItems();
-
+            mContactsList = mAdapter.getSelectedItems();
+            DaoManager daoManager = AppController.getInstance().getDaofManger();
+            daoManager.InsertPeopleList(mParentNo, mParentName, mContactsList);
+            finish();
+            Toast.makeText(this, getResources().getString(R.string.toast_insertpeople_success),Toast.LENGTH_SHORT).show();
             return true;
         }
         if (id == android.R.id.home) {

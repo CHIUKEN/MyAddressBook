@@ -6,28 +6,62 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.daogenerator.AddressBook;
 import com.myaddressbook.R;
+import com.myaddressbook.adapter.PeopleListAdapter;
+import com.myaddressbook.app.AppController;
+
+import java.util.List;
 
 public class ActPeopleList extends Activity {
-    private String Level;
+    private int mLevel;
+    private String mParentNo;
+    private String mParentName;
     private ListView mlistView;
     private Button btn_newpeople;
     private Button btn_newgroup;
+    private TextView mTxt_no_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_people_list);
-        Level = getIntent().getStringExtra("Level");
+        mLevel = getIntent().getIntExtra("Level", -1);
+        mParentNo = getIntent().getStringExtra("ParentNo");
+        mParentName = getIntent().getStringExtra("ParentName");
+
+        getActionBar().setTitle(mParentName);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         mlistView = (ListView) findViewById(R.id.listView_people);
         btn_newpeople = (Button) findViewById(R.id.btn_newpeople);
         btn_newgroup = (Button) findViewById(R.id.btn_newgroup);
-        if (Level == null) {
+        mTxt_no_data = (TextView) findViewById(R.id.txt_no_data);
+
+        if (mLevel == 3) {
             btn_newgroup.setVisibility(View.GONE);
         }
+        List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
+        PeopleListAdapter peopleListAdapter = new PeopleListAdapter(this, addressBookList);
+        mlistView.setAdapter(peopleListAdapter);
+
+        if (addressBookList.size() <= 0) {
+            mlistView.setVisibility(View.GONE);
+            mTxt_no_data.setVisibility(View.VISIBLE);
+        }
+
+        //明細頁
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
     }
 
 
@@ -47,8 +81,12 @@ public class ActPeopleList extends Activity {
 
         //設定排序
         if (id == R.id.action_settings) {
-            Intent intent=new Intent(this,ActListSortSetting.class);
+            Intent intent = new Intent(this, ActListSortSetting.class);
             startActivity(intent);
+            return true;
+        }
+        if (id == android.R.id.home) {
+            finish();
             return true;
         }
 

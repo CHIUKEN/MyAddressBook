@@ -10,6 +10,8 @@ import com.daogenerator.DaoMaster;
 import com.daogenerator.DaoSession;
 import com.daogenerator.Tag;
 import com.daogenerator.TagDao;
+import com.myaddressbook.ColorGenerator;
+import com.myaddressbook.Model.Contacts;
 
 import java.util.Date;
 import java.util.List;
@@ -45,7 +47,7 @@ public class DaoManager {
         query.where(AddressBookDao.Properties.PeopleName.eq(addressBook.getPeopleName()),
                 AddressBookDao.Properties.LevelNum.eq(addressBook.getLevelNum()),
                 AddressBookDao.Properties.ParentNo.eq(addressBook.getParentNo()));
-        // Log.d(Tag, "getPeopleNo:"+addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
+
 
         if (query.list().size() == 0) {
             Log.d(Tag, "Insert:---getPeopleNo:" + addressBook.getPeopleNo() + " getParentNo: " + addressBook.getParentNo() + " getPeopleName:" + addressBook.getPeopleName());
@@ -82,9 +84,9 @@ public class DaoManager {
         String peopleNo = String.valueOf(Long.parseLong(addressBook.getPeopleNo()) + id);
         //insert
         AddressBook addressBook1 = new AddressBook(null, peopleNo, groupname, level, parentNo, groupname, "", "", "", "", "", "", "", "", "#00DD00", String.valueOf(size), new Date());
-        boolean isSuccess=InsertAddressBook(addressBook1);
+        boolean isSuccess = InsertAddressBook(addressBook1);
 
-        if(isSuccess) {
+        if (isSuccess) {
             if (level == 1) {
                 //新增二三層
                 String parent = insertChildren(2, peopleNo);
@@ -107,15 +109,15 @@ public class DaoManager {
         long childId = 0;
         //在該群組內已有子項目
         if (queryBuilder.list().size() > 0) {
-            if(level==2) {
+            if (level == 2) {
                 childId = Long.parseLong(queryBuilder.list().get(0).getPeopleNo()) + 10000000;
-            }else{
+            } else {
                 childId = Long.parseLong(queryBuilder.list().get(0).getPeopleNo()) + 10000;
             }
         } else {
-            if(level==2) {
+            if (level == 2) {
                 childId = Long.parseLong(parentNo) + 10000000;
-            }else{
+            } else {
                 childId = Long.parseLong(parentNo) + 10000;
             }
         }
@@ -124,8 +126,37 @@ public class DaoManager {
         return addressBook.getPeopleNo();
     }
 
+    /*
+    * 新增名單
+    *
+    * */
+    public void InsertPeopleList(String parentNo, String parentName,  List<Contacts> contactsList) {
+        for (int i = 0; i < contactsList.size(); i++) {
+            AddressBook addressBook = getAddressBookQuery().where(AddressBookDao.Properties.LevelNum.eq(4),
+                    AddressBookDao.Properties.ParentNo.eq(parentNo)).orderAsc(AddressBookDao.Properties.Sort).limit(1).unique();
+            int peopleId ;
+            int sort = 1;
 
-
+            if (addressBook == null) {
+                peopleId = Integer.parseInt(parentNo) + 1;
+                sort++;
+            } else {
+                peopleId = Integer.parseInt(addressBook.getPeopleNo());
+                sort = Integer.parseInt(addressBook.getSort());
+            }
+            Contacts contacts = contactsList.get(i);
+            AddressBook addressbook = new AddressBook(null, String.valueOf(peopleId + 1), contacts.getContactsName(), 4, parentNo, parentName,
+                    "tel", contacts.getContactsPhone(), contacts.getContactsEmail(), "", "", "", "", "",
+                    String.valueOf(ColorGenerator.DEFAULT.getRandomColor()), String.valueOf(sort), new Date());
+            addressBookDao.insert(addressbook);
+            Log.d(Tag, "getPeopleNo------" + addressbook.getPeopleNo() + "-----getParentNo-----" + addressbook.getParentNo() + "-----PeopleName-----" +
+                    addressbook.getPeopleName() + "----getSort-----" + addressbook.getSort());
+        }
+    }
+    //更新tag
+    public void UpdatePeopleTag(AddressBook addressbook){
+        //TODO:UPDATE TAG BY USER
+    }
     //新增Tag
     public void InsertTag(Tag tag) {
         tagDao.insert(tag);

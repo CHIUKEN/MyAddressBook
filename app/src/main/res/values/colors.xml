@@ -8,4 +8,5 @@
     <color name="primaryColor">#982360</color>
     <color name="blue">#1E88E5</color>
     <color name="item_color">#cccccc</color>
+    <color name="no_data_color">#555555</color>
 </resources>

@@ -37,7 +37,9 @@ public class ColorGenerator {
         mColors = colorList;
         mRandom = new Random(System.currentTimeMillis());
     }
-
+    /*
+    get random color
+    * */
     public int getRandomColor() {
         return mColors.get(mRandom.nextInt(mColors.size()));
     }

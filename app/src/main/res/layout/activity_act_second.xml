@@ -41,11 +41,23 @@
         android:numColumns="@integer/column_count"
         android:listSelector="@drawable/grid_item_color_bg"
         android:choiceMode="singleChoice"
-        android:layout_margin="10dp"
         android:columnWidth="100dp"
         android:horizontalSpacing="3dp"
         android:padding="3dp"
         android:verticalSpacing="3dp"
-        android:layout_below="@+id/layout" />
+        android:layout_below="@+id/layout"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_below="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/no_data"
+        android:layout_margin="10dp"
+        android:id="@+id/txt_no_data"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/no_data_color"
+        android:visibility="gone" />
 
 </RelativeLayout>
