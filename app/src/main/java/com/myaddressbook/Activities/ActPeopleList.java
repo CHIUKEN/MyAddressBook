@@ -46,20 +46,25 @@ public class ActPeopleList extends Activity {
         if (mLevel == 3) {
             btn_newgroup.setVisibility(View.GONE);
         }
-        List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
+        final List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
         PeopleListAdapter peopleListAdapter = new PeopleListAdapter(this, addressBookList);
         mlistView.setAdapter(peopleListAdapter);
 
         if (addressBookList.size() <= 0) {
             mlistView.setVisibility(View.GONE);
             mTxt_no_data.setVisibility(View.VISIBLE);
+        }else{
+            mTxt_no_data.setVisibility(View.GONE);
         }
 
         //明細頁
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                AddressBook addressBook = addressBookList.get(i);
+                Intent intent = new Intent();
+                intent.setClass(ActPeopleList.this,ActPeopleDetail.class);
+                startActivity(intent);
             }
         });
     }

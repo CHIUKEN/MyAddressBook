@@ -130,11 +130,11 @@ public class DaoManager {
     * 新增名單
     *
     * */
-    public void InsertPeopleList(String parentNo, String parentName,  List<Contacts> contactsList) {
+    public void InsertPeopleList(String parentNo, String parentName, List<Contacts> contactsList) {
         for (int i = 0; i < contactsList.size(); i++) {
             AddressBook addressBook = getAddressBookQuery().where(AddressBookDao.Properties.LevelNum.eq(4),
                     AddressBookDao.Properties.ParentNo.eq(parentNo)).orderAsc(AddressBookDao.Properties.Sort).limit(1).unique();
-            int peopleId ;
+            int peopleId;
             int sort = 1;
 
             if (addressBook == null) {
@@ -153,10 +153,12 @@ public class DaoManager {
                     addressbook.getPeopleName() + "----getSort-----" + addressbook.getSort());
         }
     }
+
     //更新tag
-    public void UpdatePeopleTag(AddressBook addressbook){
+    public void UpdatePeopleTag(AddressBook addressbook) {
         //TODO:UPDATE TAG BY USER
     }
+
     //新增Tag
     public void InsertTag(Tag tag) {
         tagDao.insert(tag);
@@ -169,11 +171,31 @@ public class DaoManager {
         return query.list();
     }
 
+    //取得全部資料
     public List<AddressBook> getall() {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         return addressBookDao.loadAll();
     }
 
+    //取得父項中文名稱
+    public AddressBook getParentNameByParentNo(String parentNo) {
+        String parentName = null;
+        AddressBook addressBook = new AddressBook();
+        try {
+            addressBook = getAddressBookQuery().where(AddressBookDao.Properties.PeopleNo.eq(parentNo)).limit(1).unique();
+        } catch (Exception ex) {
+            Log.e(Tag, ex.getMessage());
+            return addressBook;
+        }
+        return addressBook;
+
+    }
+
+    public String getParentNameByParentName(String parentname) {
+        String parentName = null;
+        parentName = getAddressBookQuery().where(AddressBookDao.Properties.PeopleName.eq(parentname)).list().get(0).getPeopleName();
+        return parentName;
+    }
 
     private QueryBuilder<AddressBook> getAddressBookQuery() {
         return addressBookDao.queryBuilder();

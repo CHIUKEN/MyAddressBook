@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.myaddressbook.Activities.ActPeopleDetail">
+    <item
+        android:id="@+id/action_edit"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_edit" />
+    <item
+        android:id="@+id/action_cancel"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_cancel" />
+</menu>

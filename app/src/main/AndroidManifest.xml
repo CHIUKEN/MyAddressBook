@@ -67,6 +67,10 @@
             android:name="com.myaddressbook.ListActivity"
             android:label="@string/title_activity_list" >
         </activity>
+        <activity
+            android:name="com.myaddressbook.Activities.ActPeopleDetail"
+            android:label="@string/title_activity_act_people_detail" >
+        </activity>
     </application>
 
 </manifest>
