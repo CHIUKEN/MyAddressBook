@@ -34,7 +34,7 @@ public class ActPeopleDetail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_people_detail);
         mLevel = getIntent().getIntExtra("Level", -1);
-        //mAddressbook = (AddressBook) getIntent().getExtras().getSerializable("AddressBook");
+        mAddressbook = (AddressBook) getIntent().getSerializableExtra("AddressBook");
         txt_detail_name = (TextView) findViewById(R.id.txt_detail_name);
         txt_detail_phone = (TextView) findViewById(R.id.txt_detail_phone);
         txt_detail_group1 = (TextView) findViewById(R.id.txt_detail_group1);

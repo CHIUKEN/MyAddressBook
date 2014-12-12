@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -153,8 +154,11 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
             mContactsList = mAdapter.getSelectedItems();
             DaoManager daoManager = AppController.getInstance().getDaofManger();
             daoManager.InsertPeopleList(mParentNo, mParentName, mContactsList);
+            setResult(RESULT_OK);
             finish();
-            Toast.makeText(this, getResources().getString(R.string.toast_insertpeople_success),Toast.LENGTH_SHORT).show();
+            //清空
+            AppController.getInstance().clearSelectContacts();
+            Toast.makeText(this, getResources().getString(R.string.toast_insertpeople_success), Toast.LENGTH_SHORT).show();
             return true;
         }
         if (id == android.R.id.home) {
@@ -201,5 +205,15 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            AppController.getInstance().clearSelectContacts();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+
     }
 }

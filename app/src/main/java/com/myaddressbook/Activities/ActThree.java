@@ -3,6 +3,7 @@ package com.myaddressbook.Activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
@@ -22,21 +24,27 @@ import java.util.List;
 
 public class ActThree extends Activity {
     private GridView gridView;
-    private Button btn_three_group;
-    private Button btn_three_people;
-    private String parentNo;
+    private ButtonRectangle btn_three_group;
+    private ButtonRectangle btn_three_people;
+
     private GroupAdapter groupAdapter;
     private List<AddressBook> addressBookList;
+    private String mParentNo;
+    private String mParentName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_three);
         gridView = (GridView) findViewById(R.id.gridview);
-        btn_three_group = (Button) findViewById(R.id.btn_three_group);
-        btn_three_people = (Button) findViewById(R.id.btn_three_peole);
-        parentNo = getIntent().getStringExtra("ParentNo");
-        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(3, parentNo);
+        btn_three_group = (ButtonRectangle) findViewById(R.id.btn_three_group);
+        btn_three_people = (ButtonRectangle) findViewById(R.id.btn_three_peole);
+        mParentNo = getIntent().getStringExtra("ParentNo");
+        mParentName = getIntent().getStringExtra("ParentName");
+        getActionBar().setTitle(mParentName);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo);
         groupAdapter = new GroupAdapter(this, addressBookList);
         gridView.setAdapter(groupAdapter);
 
@@ -61,10 +69,10 @@ public class ActThree extends Activity {
                     // insert group to db
                     public void onClick(DialogInterface arg0, int arg1) {
                         String groupname = editText.getText().toString().trim();
-                        boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 3, parentNo);
+                        boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 3, mParentNo);
                         if (isSuccess) {
                             addressBookList.clear();
-                            addressBookList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(3, parentNo));
+                            addressBookList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo));
                             groupAdapter.notifyDataSetChanged();
                             Toast.makeText(getApplicationContext(), R.string.toast_success, Toast.LENGTH_SHORT).show();
                         } else {
@@ -79,6 +87,21 @@ public class ActThree extends Activity {
                     }
                 });
                 editDialog.show();
+            }
+        });
+        //新增聯絡人
+        btn_three_people.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActThree.this, ActCreatePeople.class);
+                Bundle bundle = new Bundle();
+                //傳目前所在的層級
+                bundle.putInt("Level", 3);
+
+                intent.putExtra("ParentNo", mParentNo);
+                intent.putExtra("ParentName", mParentName);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
@@ -100,6 +123,10 @@ public class ActThree extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == android.R.id.home) {
+            finish();
             return true;
         }
 

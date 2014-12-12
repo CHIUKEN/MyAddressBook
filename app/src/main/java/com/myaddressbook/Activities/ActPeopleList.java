@@ -1,21 +1,30 @@
 package com.myaddressbook.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
+
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.widgets.Dialog;
+import com.melnykov.fab.FloatingActionButton;
+import com.melnykov.fab.ScrollDirectionListener;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.PeopleListAdapter;
 import com.myaddressbook.app.AppController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActPeopleList extends Activity {
@@ -23,9 +32,13 @@ public class ActPeopleList extends Activity {
     private String mParentNo;
     private String mParentName;
     private ListView mlistView;
-    private Button btn_newpeople;
-    private Button btn_newgroup;
+    private ButtonRectangle btn_newpeople;
+    private ButtonRectangle btn_newgroup;
     private TextView mTxt_no_data;
+    private List<AddressBook> addressBookList;
+    private PeopleListAdapter mPeopleListAdapter;
+
+    private String noClassify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +52,22 @@ public class ActPeopleList extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mlistView = (ListView) findViewById(R.id.listView_people);
-        btn_newpeople = (Button) findViewById(R.id.btn_newpeople);
-        btn_newgroup = (Button) findViewById(R.id.btn_newgroup);
+        btn_newpeople = (ButtonRectangle) findViewById(R.id.btn_newpeople);
+        btn_newgroup = (ButtonRectangle) findViewById(R.id.btn_newgroup);
         mTxt_no_data = (TextView) findViewById(R.id.txt_no_data);
 
         if (mLevel == 3) {
             btn_newgroup.setVisibility(View.GONE);
         }
-        final List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
-        PeopleListAdapter peopleListAdapter = new PeopleListAdapter(this, addressBookList);
-        mlistView.setAdapter(peopleListAdapter);
+        noClassify = AppController.getInstance().getDaofManger().getAddressBookList(mLevel + 1, mParentNo).get(0).getPeopleNo();
+        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
+        mPeopleListAdapter = new PeopleListAdapter(this, addressBookList);
+        mlistView.setAdapter(mPeopleListAdapter);
 
         if (addressBookList.size() <= 0) {
             mlistView.setVisibility(View.GONE);
             mTxt_no_data.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mTxt_no_data.setVisibility(View.GONE);
         }
 
@@ -63,12 +77,129 @@ public class ActPeopleList extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AddressBook addressBook = addressBookList.get(i);
                 Intent intent = new Intent();
-                intent.setClass(ActPeopleList.this,ActPeopleDetail.class);
+                intent.setClass(ActPeopleList.this, ActPeopleDetail.class);
+                intent.putExtra("AddressBook", addressBook);
                 startActivity(intent);
             }
         });
+        //新增群組
+        btn_newgroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(ActPeopleList.this,
+                        getResources().getString(R.string.dialog_title),
+                        getResources().getString(R.string.dialog_msg));
+
+                dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        ShowCreateInsertGroup();
+                    }
+                });
+                dialog.setOnCancelButtonClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                dialog.show();
+
+            }
+        });
+        //新增聯絡人
+        btn_newpeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActPeopleList.this, ActCreatePeople.class);
+                Bundle bundle = new Bundle();
+                //傳目前所在的層級
+                bundle.putInt("Level", mLevel);
+                intent.putExtra("ParentNo", mParentNo);
+                intent.putExtra("ParentName", mParentName);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 1);
+            }
+        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToListView(mlistView, new ScrollDirectionListener() {
+            @Override
+            public void onScrollDown() {
+               // Log.d("ListViewFragment", "onScrollDown()");
+            }
+
+            @Override
+            public void onScrollUp() {
+               // Log.d("ListViewFragment", "onScrollUp()");
+            }
+        });
+
+
     }
 
+    private void ShowCreateInsertGroup() {
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(ActPeopleList.this);
+        editDialog.setTitle(R.string.btn_new_group);
+
+        final EditText editText = new EditText(ActPeopleList.this);
+        editText.setHint(R.string.edit_hint_text);
+        editDialog.setView(editText);
+
+        editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
+            // insert group to db
+            public void onClick(DialogInterface arg0, int arg1) {
+                String groupname = editText.getText().toString().trim();
+                boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, mLevel + 1, mParentNo);
+                if (isSuccess) {
+                    //TODO:更改資料
+                    AppController.getInstance().getDaofManger().UpdateDataByCreateNewGroup(addressBookList, noClassify);
+                    //TODO:移至群組頁
+                    Intent intent = new Intent();
+                    if (mLevel + 1 == 2) {
+                        intent.setClass(ActPeopleList.this, ActSecond.class);
+                    } else if (mLevel + 1 == 3) {
+                        intent.setClass(ActPeopleList.this, ActThree.class);
+                    }
+                    intent.putExtra("ParentNo", mParentNo);
+                    intent.putExtra("ParentName", mParentName);
+                    intent.putExtra("Level", mLevel);
+                    startActivity(intent);
+                    finish();
+
+                    Toast.makeText(getApplicationContext(), R.string.toast_success, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        editDialog.setNegativeButton(R.string.alert_cancal, new DialogInterface.OnClickListener() {
+            // cancel
+            public void onClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        editDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (addressBookList == null) {
+            addressBookList = new ArrayList<AddressBook>();
+        }
+        addressBookList.clear();
+        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
+        if (addressBookList.size() > 0) {
+            mTxt_no_data.setVisibility(View.GONE);
+            mlistView.setVisibility(View.VISIBLE);
+        }
+        mPeopleListAdapter.setAddressBookList(addressBookList);
+        mPeopleListAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

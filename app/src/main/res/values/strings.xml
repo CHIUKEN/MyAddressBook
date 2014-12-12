@@ -26,6 +26,7 @@
     <string name="edit_group_name">群組名稱</string>
     <string name="edit_hint_text">請輸入群組名稱，最多10個字</string>
     <string name="toast_edit_error">最多輸入10個字</string>
+    <string name="toast_error_msg">新增失敗</string>
     <string name="toast_error">新增失敗！已有相同群組名稱</string>
     <string name="toast_success">新增成功</string>
     <string name="alert_submit">確認</string>
@@ -35,6 +36,11 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="no_data">尚未加入名單</string>
+    <string name="dialog_title">提醒您</string>
+    <string name="dialog_msg">建立新群組，會將目前群組名單移至未分類，請問是否繼續？</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_goon">繼續</string>
+
     <string name="toast_insertpeople_success">新增成功!</string>
     <string name="btn_callphone">打電話</string>
     <string name="title_activity_act_people_detail">詳細資料</string>

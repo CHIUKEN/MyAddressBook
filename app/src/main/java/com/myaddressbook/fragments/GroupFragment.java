@@ -60,7 +60,7 @@ public class GroupFragment extends Fragment {
     //private OnFragmentInteractionListener mListener;
     private GridView mGridView;
     private ButtonRectangle mBtn_newpeople;
-    private Button mBtn_newgroup;
+    private ButtonRectangle mBtn_newgroup;
     private List<AddressBook> addressBookArrayList;
     private GroupAdapter groupAdapter;
 
@@ -106,7 +106,7 @@ public class GroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         mGridView = (GridView) view.findViewById(R.id.gridview);
         mBtn_newpeople = (ButtonRectangle) view.findViewById(R.id.btn_new);
-        mBtn_newgroup = (Button) view.findViewById(R.id.btn_group);
+        mBtn_newgroup = (ButtonRectangle) view.findViewById(R.id.btn_group);
 
         groupAdapter = new GroupAdapter(getActivity(), addressBookArrayList);
 
@@ -128,12 +128,13 @@ public class GroupFragment extends Fragment {
                 }
 
                 //TODO:判斷下一層是否有資料,前往不同的ACTIVITY
-                List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, "1000000000");
+                List<AddressBook> addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, addressBook.getPeopleNo());
                 if (addressBookList.size() > 1) {
                     //下一層級
                     Intent secondIntent = new Intent();
                     secondIntent.setClass(getActivity(), ActSecond.class);
                     secondIntent.putExtra("ParentNo", addressBook.getPeopleNo());
+                    secondIntent.putExtra("ParentName", addressBook.getPeopleName());
                     startActivity(secondIntent);
                 } else {
                     //名單頁

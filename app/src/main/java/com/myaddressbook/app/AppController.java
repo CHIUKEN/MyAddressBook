@@ -18,14 +18,15 @@ public class AppController extends Application {
     private static AppController mInstance;
     private PrefManager pref;
     private DaoManager daof;
-    private List<Contacts>contactsList;
+    private List<Contacts> contactsList;
+
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
         pref = new PrefManager(this);
         daof = new DaoManager(this);
-        contactsList=new ArrayList<Contacts>();
+        contactsList = new ArrayList<Contacts>();
     }
 
     public static synchronized AppController getInstance() {
@@ -46,11 +47,18 @@ public class AppController extends Application {
         }
         return daof;
     }
-    public List<Contacts>getContactsList()
-    {
-        if(contactsList==null){
-            contactsList=new ArrayList<Contacts>();
+    //取得選取項目
+    public List<Contacts> getContactsList() {
+        if (contactsList == null) {
+            contactsList = new ArrayList<Contacts>();
         }
         return contactsList;
+    }
+    //清空選取項目
+    public void clearSelectContacts() {
+        if (contactsList == null) {
+            contactsList = new ArrayList<Contacts>();
+        }
+        contactsList.clear();
     }
 }

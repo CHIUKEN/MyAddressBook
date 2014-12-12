@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
@@ -27,11 +28,12 @@ import java.util.List;
 
 public class ActSecond extends Activity {
     private GridView mGridView;
-    private Button btn_second_group;
-    private Button btn_second_people;
+    private ButtonRectangle btn_second_group;
+    private ButtonRectangle btn_second_people;
     private GroupAdapter mGroupAdapter;
     private List<AddressBook> addressBookList;
     private String mParentNo;
+    private String mParentName;
     private TextView mTxt_no_data;
 
     @Override
@@ -40,11 +42,15 @@ public class ActSecond extends Activity {
 
         setContentView(R.layout.activity_act_second);
         mParentNo = getIntent().getStringExtra("ParentNo");
+        mParentName = getIntent().getStringExtra("ParentName");
+        getActionBar().setTitle(mParentName);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, mParentNo);
 
         mGridView = (GridView) findViewById(R.id.gridview);
-        btn_second_group = (Button) findViewById(R.id.btn_second_group);
-        btn_second_people = (Button) findViewById(R.id.btn_second_people);
+        btn_second_group = (ButtonRectangle) findViewById(R.id.btn_second_group);
+        btn_second_people = (ButtonRectangle) findViewById(R.id.btn_second_people);
         mTxt_no_data = (TextView) findViewById(R.id.txt_no_data);
 
         mGroupAdapter = new GroupAdapter(this, addressBookList);
@@ -59,8 +65,17 @@ public class ActSecond extends Activity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ActSecond.this, ActThree.class);
-                intent.putExtra("ParentNo", addressBookList.get(position).getPeopleNo());
+                AddressBook nowAdd = addressBookList.get(position);
+                List<AddressBook> nextAdd = AppController.getInstance().getDaofManger().getAddressBookList(3, nowAdd.getPeopleNo());
+                Intent intent = new Intent();
+                if (nextAdd.size() > 1) {
+                    intent.setClass(ActSecond.this, ActThree.class);
+                } else {
+                    intent.setClass(ActSecond.this, ActPeopleList.class);
+                }
+                intent.putExtra("ParentNo", nowAdd.getPeopleNo());
+                intent.putExtra("ParentName", nowAdd.getPeopleName());
+                intent.putExtra("Level", 2);
                 startActivity(intent);
             }
         });
@@ -79,6 +94,10 @@ public class ActSecond extends Activity {
                     // insert group to db
                     public void onClick(DialogInterface arg0, int arg1) {
                         String groupname = editText.getText().toString().trim();
+                        if (groupname == null || groupname == "") {
+                            Toast.makeText(getApplicationContext(), R.string.toast_error_msg, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 2, mParentNo);
                         if (isSuccess) {
                             addressBookList.clear();
@@ -99,6 +118,22 @@ public class ActSecond extends Activity {
                 editDialog.show();
             }
         });
+        //新增聯絡人
+        btn_second_people.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActSecond.this, ActCreatePeople.class);
+                Bundle bundle = new Bundle();
+                //傳目前所在的層級
+                bundle.putInt("Level", 2);
+
+                intent.putExtra("ParentNo", mParentNo);
+                intent.putExtra("ParentName", mParentName);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -120,7 +155,10 @@ public class ActSecond extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -55,6 +55,10 @@ public class PeopleListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void setAddressBookList(List<AddressBook> addressBookList) {
+        this.addressBookList = addressBookList;
+    }
+
     class PeopleViewHolder {
         public TextView txtName;
         public TextView txtPhone;

@@ -134,14 +134,14 @@ public class DaoManager {
         for (int i = 0; i < contactsList.size(); i++) {
             AddressBook addressBook = getAddressBookQuery().where(AddressBookDao.Properties.LevelNum.eq(4),
                     AddressBookDao.Properties.ParentNo.eq(parentNo)).orderAsc(AddressBookDao.Properties.Sort).limit(1).unique();
-            int peopleId;
+            long peopleId;
             int sort = 1;
 
             if (addressBook == null) {
-                peopleId = Integer.parseInt(parentNo) + 1;
+                peopleId = Long.parseLong(parentNo) + 1;
                 sort++;
             } else {
-                peopleId = Integer.parseInt(addressBook.getPeopleNo());
+                peopleId = Long.parseLong(addressBook.getPeopleNo());
                 sort = Integer.parseInt(addressBook.getSort());
             }
             Contacts contacts = contactsList.get(i);
@@ -190,7 +190,14 @@ public class DaoManager {
         return addressBook;
 
     }
-
+    //更改資料
+    public void UpdateDataByCreateNewGroup(List<AddressBook>addressBookList,String parentNo)
+    {
+        for (int i = 0; i < addressBookList.size(); i++) {
+            addressBookList.get(i).setParentNo(parentNo);
+            addressBookDao.update(addressBookList.get(i));
+        }
+    }
     public String getParentNameByParentName(String parentname) {
         String parentName = null;
         parentName = getAddressBookQuery().where(AddressBookDao.Properties.PeopleName.eq(parentname)).list().get(0).getPeopleName();
