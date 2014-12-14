@@ -97,7 +97,7 @@ public class GroupFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         //GET 第一層 DATA
-        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1, "");
+        addressBookArrayList =new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(1, "");
         View view = inflater.inflate(R.layout.fragment_group, container, false);
         mGridView = (GridView) view.findViewById(R.id.gridview);
         mBtn_newpeople = (ButtonFloat) view.findViewById(R.id.btn_float_newpeople);
@@ -266,6 +266,14 @@ public class GroupFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        addressBookArrayList.clear();
+        addressBookArrayList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(1, ""));
+        groupAdapter.notifyDataSetChanged();
     }
 
 

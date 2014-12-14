@@ -5,25 +5,18 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.SearchView;
 
-import com.myaddressbook.Test2Activity;
-import com.myaddressbook.TestActivity;
 import com.myaddressbook.fragments.AboutFragment;
 import com.myaddressbook.fragments.GroupFragment;
 import com.myaddressbook.fragments.TagFragment;
 
-import java.util.List;
-import com.myaddressbook.NavigationDrawerFragment;
+import com.myaddressbook.fragments.NavigationDrawerFragment;
 import com.myaddressbook.R;
 
 public class ActHome extends Activity
@@ -61,23 +54,24 @@ public class ActHome extends Activity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
-        switch (position){
+        switch (position) {
             case 0:
                 //select db group data
-                fragment= GroupFragment.newInstance(1);
+                fragment = GroupFragment.newInstance(1);
                 break;
             case 1:
                 //select db tag data
-                fragment= TagFragment.newInstance(2);
+                fragment = TagFragment.newInstance(2);
                 break;
             case 2:
-                fragment= AboutFragment.newInstance("","");
+                fragment = AboutFragment.newInstance("", "");
                 break;
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
     }
+
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
@@ -91,6 +85,7 @@ public class ActHome extends Activity
                 break;
         }
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -106,6 +101,7 @@ public class ActHome extends Activity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
+
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
@@ -129,9 +125,12 @@ public class ActHome extends Activity
 
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, ActGridSortSetting.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("Level", 1);
+            intent.putExtra("ParentNo", "");
+            intent.putExtras(bundle);
             startActivity(intent);
             return true;
         }

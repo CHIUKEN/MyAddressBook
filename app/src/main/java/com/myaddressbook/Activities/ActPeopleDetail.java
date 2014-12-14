@@ -261,7 +261,7 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
                     layout_detail_group3.setVisibility(View.GONE);
                     isHasNext = true;
                 } else {
-                    mAddressbook.setParentNo(addressBook.getPeopleName());
+                    mAddressbook.setParentNo(addressBook.getPeopleNo());
                     layout_detail_group2.setVisibility(View.GONE);
                     layout_detail_group3.setVisibility(View.GONE);
                     txt_detail_group3.setText("請選擇");

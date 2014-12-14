@@ -16,12 +16,15 @@ import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.views.MaterialEditText;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class ActThree extends Activity {
     private GridView gridView;
@@ -45,15 +48,15 @@ public class ActThree extends Activity {
         getActionBar().setTitle(mParentName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addressBookList =new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo);
+        addressBookList = new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo);
         groupAdapter = new GroupAdapter(this, addressBookList);
         gridView.setAdapter(groupAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AddressBook addressBook=addressBookList.get(position);
-                Intent intent=new Intent(ActThree.this,ActPeopleList.class);
+                AddressBook addressBook = addressBookList.get(position);
+                Intent intent = new Intent(ActThree.this, ActPeopleList.class);
                 intent.putExtra("ParentNo", addressBook.getPeopleNo());
                 intent.putExtra("ParentName", addressBook.getPeopleName());
                 intent.putExtra("Level", 3);
@@ -64,17 +67,32 @@ public class ActThree extends Activity {
         btn_three_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder editDialog = new AlertDialog.Builder(ActThree.this);
-                editDialog.setTitle(R.string.btn_new_group);
+                final MaterialDialog editDialog = new MaterialDialog(ActThree.this)
+                        .setTitle(R.string.btn_new_group);
 
-                final EditText editText = new EditText(ActThree.this);
+                final MaterialEditText editText = new MaterialEditText(ActThree.this);
+
                 editText.setHint(R.string.edit_hint_text);
-                editDialog.setView(editText);
+                editText.setSingleLineEllipsis(true);
+                editText.setMaxCharacters(10);
+                editText.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
 
-                editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
-                    // insert group to db
-                    public void onClick(DialogInterface arg0, int arg1) {
+                editText.setBaseColor(getResources().getColor(R.color.base_color));
+                editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
+                editText.setErrorColor(getResources().getColor(R.color.error_color));
+
+                editText.setTextSize(18);
+                editDialog.setContentView(editText);
+
+                editDialog.setPositiveButton(R.string.alert_submit, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         String groupname = editText.getText().toString().trim();
+                        if (groupname == null || groupname == "") {
+                            Toast.makeText(getApplicationContext(), R.string.toast_error_msg, Toast.LENGTH_SHORT).show();
+                            editDialog.dismiss();
+                            return;
+                        }
                         boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, 3, mParentNo);
                         if (isSuccess) {
                             addressBookList.clear();
@@ -84,14 +102,18 @@ public class ActThree extends Activity {
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_SHORT).show();
                         }
+                        editDialog.dismiss();
 
                     }
                 });
-                editDialog.setNegativeButton(R.string.alert_cancal, new DialogInterface.OnClickListener() {
-                    // cancel
-                    public void onClick(DialogInterface arg0, int arg1) {
+
+                editDialog.setNegativeButton(R.string.alert_cancal, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        editDialog.dismiss();
                     }
                 });
+
                 editDialog.show();
             }
         });
@@ -122,6 +144,12 @@ public class ActThree extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, ActGridSortSetting.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("Level", 3);
+            intent.putExtra("ParentNo", mParentNo);
+            intent.putExtras(bundle);
+            startActivity(intent);
             return true;
         }
         if (id == android.R.id.home) {

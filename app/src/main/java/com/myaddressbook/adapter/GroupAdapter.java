@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.daogenerator.AddressBook;
 import com.myaddressbook.R;
-import com.myaddressbook.TextDrawable;
+import com.myaddressbook.util.TextDrawable;
 import com.myaddressbook.util.Utils;
 
 import java.util.List;

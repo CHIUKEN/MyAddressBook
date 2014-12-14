@@ -8,8 +8,11 @@
     <com.dynamicgrid.DynamicGridView
 
         android:id="@+id/dynamic_grid"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_width="match_parent"
         android:numColumns="@integer/column_count"
-        android:listSelector="@drawable/grid_item_color_bg" />
+        android:listSelector="@drawable/grid_item_color_bg"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp" />
 </RelativeLayout>

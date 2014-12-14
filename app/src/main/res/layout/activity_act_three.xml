@@ -21,10 +21,10 @@
             android:id="@+id/btn_three_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="#008800"
-            android:text="@string/btn_new_group" />
+            android:text="@string/btn_new_group"
+            android:layout_marginBottom="10dp" />
 
 
 
@@ -45,10 +45,10 @@
         android:layout_below="@+id/layout"
         android:choiceMode="singleChoice"
         android:columnWidth="100dp"
-        android:horizontalSpacing="3dp"
+        android:horizontalSpacing="10dp"
         android:listSelector="@drawable/grid_item_color_bg"
         android:numColumns="@integer/column_count"
         android:padding="3dp"
-        android:verticalSpacing="3dp"
+        android:verticalSpacing="10dp"
         android:layout_marginTop="10dp" />
 </RelativeLayout>

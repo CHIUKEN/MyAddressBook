@@ -24,28 +24,24 @@ public class ActGridSortSetting extends Activity {
     private static final String TAG = ActGridSortSetting.class.getName();
     private DynamicGridView gridView;
     private List<AddressBook> addressBookArrayList;
+    private int mLevel;
+    private String mParentNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_act_grid_sort_setting);
-         addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1, "");
+        mLevel = getIntent().getIntExtra("Level", -1);
+        mParentNo = getIntent().getStringExtra("ParentNo");
+        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(mLevel, mParentNo);
+
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
         CheeseDynamicAdapter cheeseDynamicAdapter = new CheeseDynamicAdapter(this,
                 addressBookArrayList,
                 getResources().getInteger(R.integer.column_count));
         gridView.setAdapter(cheeseDynamicAdapter);
 
-        //
-//        add callback to stop edit mode if needed
-//        gridView.setOnDropListener(new DynamicGridView.OnDropListener()
-//        {
-//            @Override
-//            public void onActionDrop()
-//            {
-//                gridView.stopEditMode();
-//            }
-//        });
         gridView.setOnDragListener(new DynamicGridView.OnDragListener() {
             @Override
             public void onDragStarted(int position) {
@@ -55,6 +51,11 @@ public class ActGridSortSetting extends Activity {
             @Override
             public void onDragPositionsChanged(int oldPosition, int newPosition) {
                 Log.d(TAG, String.format("drag item position changed from %d to %d", oldPosition, newPosition));
+
+                AddressBook oldBook = addressBookArrayList.get(oldPosition);
+                addressBookArrayList.remove(oldPosition);
+                addressBookArrayList.add(newPosition, oldBook);
+
             }
         });
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -91,12 +92,10 @@ public class ActGridSortSetting extends Activity {
             //TODO:UPDATE DB
             gridView.stopEditMode();
             for (int i = 0; i < addressBookArrayList.size(); i++) {
-                int a = gridView.getPositionForID(i);
-
-                addressBookArrayList.get(a).setSort(String.valueOf(i));
-                Log.d(TAG, "position:===" + addressBookArrayList.get(a).getPeopleName()+"====sort===:" + addressBookArrayList.get(a).getSort());
+                addressBookArrayList.get(i).setSort(String.valueOf(1000 + i));
             }
             AppController.getInstance().getDaofManger().updateDataForSort(addressBookArrayList);
+            finish();
             return true;
         }
 

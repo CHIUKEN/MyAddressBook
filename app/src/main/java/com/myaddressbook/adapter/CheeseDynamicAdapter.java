@@ -1,7 +1,8 @@
 package com.myaddressbook.adapter;
+
 import android.content.Context;
 import android.graphics.Color;
-import android.provider.Telephony;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.daogenerator.AddressBook;
 import com.dynamicgrid.BaseDynamicGridAdapter;
 import com.myaddressbook.R;
+import com.myaddressbook.util.TextDrawable;
+import com.myaddressbook.util.Utils;
 
 import java.util.List;
 
@@ -21,8 +24,11 @@ import java.util.List;
  * Time: 10:56 PM
  */
 public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
+    private Context mContext;
+
     public CheeseDynamicAdapter(Context context, List<?> items, int columnCount) {
         super(context, items, columnCount);
+        mContext = context;
     }
 
     @Override
@@ -35,25 +41,31 @@ public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
         } else {
             holder = (CheeseViewHolder) convertView.getTag();
         }
-        AddressBook addressBook=(AddressBook)getItem(position);
-        holder.build(addressBook.getPeopleName(),addressBook.getDisplayColor());
-       // convertView.setBackgroundColor(Color.parseColor(addressBook.getDisplayColor()));
+        AddressBook addressBook = (AddressBook) getItem(position);
+        holder.build(addressBook.getPeopleName(), addressBook.getDisplayColor());
+
         return convertView;
     }
 
     private class CheeseViewHolder {
         private TextView titleText;
         private ImageView image;
+        private Drawable drawable;
 
         private CheeseViewHolder(View view) {
             titleText = (TextView) view.findViewById(R.id.item_title);
             image = (ImageView) view.findViewById(R.id.item_img);
         }
 
-        void build(String title,String color) {
+        void build(String title, String color) {
             titleText.setText(title);
-            image.setImageResource(R.drawable.ic_launcher);
-            image.setBackgroundColor(Color.parseColor(color));
+            drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .withBorder(Utils.toPx(mContext, 2))
+                    .endConfig()
+                    .buildRoundRect("", Color.parseColor(color), Utils.toPx(mContext, 10));
+            image.setImageDrawable(drawable);
+
         }
     }
 }

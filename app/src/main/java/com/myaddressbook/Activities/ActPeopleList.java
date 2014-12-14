@@ -19,6 +19,7 @@ import com.daogenerator.AddressBook;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.Dialog;
 
 import com.myaddressbook.R;
@@ -27,6 +28,8 @@ import com.myaddressbook.app.AppController;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class ActPeopleList extends Activity {
     private int mLevel;
@@ -129,16 +132,26 @@ public class ActPeopleList extends Activity {
     }
 
     private void ShowCreateInsertGroup() {
-        AlertDialog.Builder editDialog = new AlertDialog.Builder(ActPeopleList.this);
-        editDialog.setTitle(R.string.btn_new_group);
+        final MaterialDialog editDialog = new MaterialDialog(this)
+                .setTitle(R.string.btn_new_group);
 
-        final EditText editText = new EditText(ActPeopleList.this);
+        final MaterialEditText editText = new MaterialEditText(this);
+
         editText.setHint(R.string.edit_hint_text);
-        editDialog.setView(editText);
+        editText.setSingleLineEllipsis(true);
+        editText.setMaxCharacters(10);
+        editText.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
 
-        editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
-            // insert group to db
-            public void onClick(DialogInterface arg0, int arg1) {
+        editText.setBaseColor(getResources().getColor(R.color.base_color));
+        editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
+        editText.setErrorColor(getResources().getColor(R.color.error_color));
+
+        editText.setTextSize(18);
+        editDialog.setContentView(editText);
+
+        editDialog.setPositiveButton(R.string.alert_submit, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 String groupname = editText.getText().toString().trim();
                 boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, mLevel + 1, mParentNo);
                 if (isSuccess) {
@@ -161,15 +174,58 @@ public class ActPeopleList extends Activity {
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
 
+        editDialog.setNegativeButton(R.string.alert_cancal, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editDialog.dismiss();
             }
         });
-        editDialog.setNegativeButton(R.string.alert_cancal, new DialogInterface.OnClickListener() {
-            // cancel
-            public void onClick(DialogInterface arg0, int arg1) {
-            }
-        });
+
         editDialog.show();
+//        AlertDialog.Builder editDialog = new AlertDialog.Builder(ActPeopleList.this);
+//        editDialog.setTitle(R.string.btn_new_group);
+//
+//        final EditText editText = new EditText(ActPeopleList.this);
+//        editText.setHint(R.string.edit_hint_text);
+//        editDialog.setView(editText);
+//
+//        editDialog.setPositiveButton(R.string.alert_submit, new DialogInterface.OnClickListener() {
+//            // insert group to db
+//            public void onClick(DialogInterface arg0, int arg1) {
+//                String groupname = editText.getText().toString().trim();
+//                boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, mLevel + 1, mParentNo);
+//                if (isSuccess) {
+//                    //TODO:更改資料
+//                    AppController.getInstance().getDaofManger().updateDataByCreateNewGroup(addressBookList, noClassify);
+//                    //TODO:移至群組頁
+//                    Intent intent = new Intent();
+//                    if (mLevel + 1 == 2) {
+//                        intent.setClass(ActPeopleList.this, ActSecond.class);
+//                    } else if (mLevel + 1 == 3) {
+//                        intent.setClass(ActPeopleList.this, ActThree.class);
+//                    }
+//                    intent.putExtra("ParentNo", mParentNo);
+//                    intent.putExtra("ParentName", mParentName);
+//                    intent.putExtra("Level", mLevel);
+//                    startActivity(intent);
+//                    finish();
+//
+//                    Toast.makeText(getApplicationContext(), R.string.toast_success, Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        });
+//        editDialog.setNegativeButton(R.string.alert_cancal, new DialogInterface.OnClickListener() {
+//            // cancel
+//            public void onClick(DialogInterface arg0, int arg1) {
+//            }
+//        });
+//        editDialog.show();
     }
 
     @Override

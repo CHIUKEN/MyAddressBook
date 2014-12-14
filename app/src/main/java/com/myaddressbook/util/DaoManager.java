@@ -64,7 +64,7 @@ public class DaoManager {
     public boolean InsertAdd(String groupname, int level, String parentNo) {
         QueryBuilder<AddressBook> queryBuilder = getAddressBookQuery();
         queryBuilder.where(AddressBookDao.Properties.LevelNum.eq(level))
-                .orderDesc(AddressBookDao.Properties.CreateDate).limit(1).unique();
+                .orderDesc(AddressBookDao.Properties.Sort).limit(1).unique();
         //取得最大的peopleNo
         int size = queryBuilder.list().size();
         AddressBook addressBook = queryBuilder.list().get(size - 1);
@@ -82,7 +82,7 @@ public class DaoManager {
         }
 
         String peopleNo = String.valueOf(Long.parseLong(addressBook.getPeopleNo()) + id);
-        int sort=Integer.parseInt(addressBook.getSort())+1;
+        int sort = Integer.parseInt(addressBook.getSort()) + 1;
         //insert
         AddressBook addressBook1 = new AddressBook(null, peopleNo, groupname, level, parentNo, groupname, "", "", "", "", "", "", "", "", "#00DD00", String.valueOf(sort), new Date());
         boolean isSuccess = InsertAddressBook(addressBook1);
@@ -159,10 +159,12 @@ public class DaoManager {
     public void updatePeopleTag(AddressBook addressbook) {
         //TODO:UPDATE TAG BY USER
     }
+
     //
-    public void updateSingleAddressbook(AddressBook addressBook){
+    public void updateSingleAddressbook(AddressBook addressBook) {
         addressBookDao.update(addressBook);
     }
+
     //新增Tag
     public void insertTag(Tag tag) {
         tagDao.insert(tag);
@@ -195,15 +197,16 @@ public class DaoManager {
         return addressBook;
 
     }
+
     //更改資料
-    public void updateDataByCreateNewGroup(List<AddressBook>addressBookList,String parentNo)
-    {
+    public void updateDataByCreateNewGroup(List<AddressBook> addressBookList, String parentNo) {
         for (int i = 0; i < addressBookList.size(); i++) {
             addressBookList.get(i).setParentNo(parentNo);
             addressBookDao.update(addressBookList.get(i));
 
         }
     }
+
     public String getParentNameByParentName(String parentname) {
         String parentName = null;
         parentName = getAddressBookQuery().where(AddressBookDao.Properties.PeopleName.eq(parentname)).list().get(0).getPeopleName();
@@ -214,20 +217,21 @@ public class DaoManager {
         return addressBookDao.queryBuilder();
     }
 
-    public List<AddressBook> filterGroup(int Level, String parentNo,String strQuery){
+    public List<AddressBook> filterGroup(int Level, String parentNo, String strQuery) {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         query.where(AddressBookDao.Properties.LevelNum.eq(Level), AddressBookDao.Properties.ParentNo.eq(parentNo),
                 AddressBookDao.Properties.PeopleName.like(strQuery)).orderAsc(AddressBookDao.Properties.Sort);
         return query.list();
     }
-    public List<AddressBook>searchAll(String strQuery){
+
+    public List<AddressBook> searchAll(String strQuery) {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
-        query.where(AddressBookDao.Properties.LevelNum.eq(4),AddressBookDao.Properties.PeopleName.like(strQuery)).orderDesc(AddressBookDao.Properties.PeopleNo);
+        query.where(AddressBookDao.Properties.LevelNum.eq(4), AddressBookDao.Properties.PeopleName.like(strQuery)).orderDesc(AddressBookDao.Properties.PeopleNo);
         return query.list();
     }
-    //更改資料
-    public void updateDataForSort(List<AddressBook>addressBookList)
-    {
+
+    //更改排序
+    public void updateDataForSort(List<AddressBook> addressBookList) {
         for (int i = 0; i < addressBookList.size(); i++) {
 
             addressBookDao.update(addressBookList.get(i));

@@ -10,6 +10,7 @@ import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.TypedValue;
 
+import com.myaddressbook.util.TextDrawable;
 
 
 /**

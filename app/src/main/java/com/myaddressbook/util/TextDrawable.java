@@ -1,4 +1,4 @@
-package com.myaddressbook;
+package com.myaddressbook.util;
 
 import android.graphics.*;
 import android.graphics.drawable.ShapeDrawable;

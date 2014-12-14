@@ -13,8 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-
-import junit.framework.Test;
+import com.myaddressbook.util.TextDrawable;
 
 import java.util.Arrays;
 import java.util.List;
