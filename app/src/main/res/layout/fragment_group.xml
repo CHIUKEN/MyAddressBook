@@ -22,19 +22,12 @@
             android:id="@+id/btn_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="#008800"
-            android:text="@string/btn_new_group" />
+            android:text="@string/btn_new_group"
+            android:layout_marginBottom="10dp" />
 
-        <com.gc.materialdesign.views.ButtonRectangle
-            android:id="@+id/btn_new"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="#CC0000"
-            android:text="@string/btn_new_people" />
+
     </LinearLayout>
 
     <View
@@ -52,24 +45,24 @@
         android:choiceMode="singleChoice"
         android:columnWidth="100dp"
 
-        android:horizontalSpacing="3dp"
+        android:horizontalSpacing="10dp"
         android:listSelector="@drawable/grid_item_color_bg"
         android:numColumns="@integer/column_count"
         android:padding="3dp"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="3dp"
+        android:verticalSpacing="10dp"
         android:layout_marginTop="10dp" />
 
     <com.gc.materialdesign.views.ButtonFloat
-        android:id="@+id/buttonFloat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
+        android:id="@+id/btn_float_newpeople"
+        android:layout_width="@dimen/flatButton_height"
+        android:layout_height="@dimen/flatButton_height"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="false"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="22dp"
         android:background="#1E88E5"
         materialdesign:animate="true"
-        materialdesign:iconDrawable="@drawable/ic_action_new" />
+        materialdesign:iconDrawable="@drawable/ic_action_new"
+        android:layout_marginBottom="@dimen/flatButton_bottom" />
 </RelativeLayout>

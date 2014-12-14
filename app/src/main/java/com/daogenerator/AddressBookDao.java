@@ -28,7 +28,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
         public final static Property PeopleName = new Property(2, String.class, "PeopleName", false, "PEOPLE_NAME");
         public final static Property LevelNum = new Property(3, Integer.class, "LevelNum", false, "LEVEL_NUM");
         public final static Property ParentNo = new Property(4, String.class, "ParentNo", false, "PARENT_NO");
-        public final static Property FileName = new Property(5, String.class, "FileName", false, "FILE_NAME");
+        public final static Property ParentName = new Property(5, String.class, "ParentName", false, "PARENT_NAME");
         public final static Property PeopleTel = new Property(6, String.class, "PeopleTel", false, "PEOPLE_TEL");
         public final static Property PeoplePhone = new Property(7, String.class, "PeoplePhone", false, "PEOPLE_PHONE");
         public final static Property PeopleEmail = new Property(8, String.class, "PeopleEmail", false, "PEOPLE_EMAIL");
@@ -60,7 +60,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
                 "'PEOPLE_NAME' TEXT," + // 2: PeopleName
                 "'LEVEL_NUM' INTEGER," + // 3: LevelNum
                 "'PARENT_NO' TEXT," + // 4: ParentNo
-                "'FILE_NAME' TEXT," + // 5: FileName
+                "'PARENT_NAME' TEXT," + // 5: ParentName
                 "'PEOPLE_TEL' TEXT," + // 6: PeopleTel
                 "'PEOPLE_PHONE' TEXT," + // 7: PeoplePhone
                 "'PEOPLE_EMAIL' TEXT," + // 8: PeopleEmail
@@ -110,9 +110,9 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
             stmt.bindString(5, ParentNo);
         }
  
-        String FileName = entity.getFileName();
-        if (FileName != null) {
-            stmt.bindString(6, FileName);
+        String ParentName = entity.getParentName();
+        if (ParentName != null) {
+            stmt.bindString(6, ParentName);
         }
  
         String PeopleTel = entity.getPeopleTel();
@@ -186,7 +186,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // PeopleName
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // LevelNum
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ParentNo
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // FileName
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ParentName
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // PeopleTel
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // PeoplePhone
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // PeopleEmail
@@ -210,7 +210,7 @@ public class AddressBookDao extends AbstractDao<AddressBook, Long> {
         entity.setPeopleName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setLevelNum(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setParentNo(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setFileName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setParentName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPeopleTel(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setPeoplePhone(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setPeopleEmail(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));

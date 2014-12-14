@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.SearchView;
 
+import com.myaddressbook.Test2Activity;
 import com.myaddressbook.TestActivity;
+import com.myaddressbook.fragments.AboutFragment;
 import com.myaddressbook.fragments.GroupFragment;
 import com.myaddressbook.fragments.TagFragment;
 
@@ -25,7 +27,7 @@ import com.myaddressbook.NavigationDrawerFragment;
 import com.myaddressbook.R;
 
 public class ActHome extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, SearchView.OnQueryTextListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,7 +38,7 @@ public class ActHome extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private SearchView mSearchView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class ActHome extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
     }
 
     @Override
@@ -61,25 +64,37 @@ public class ActHome extends Activity
         switch (position){
             case 0:
                 //select db group data
-                fragment= GroupFragment.newInstance("","");
+                fragment= GroupFragment.newInstance(1);
                 break;
             case 1:
                 //select db tag data
-                fragment= TagFragment.newInstance("","");
+                fragment= TagFragment.newInstance(2);
+                break;
+            case 2:
+                fragment= AboutFragment.newInstance("","");
                 break;
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
     }
-
+    public void onSectionAttached(int number) {
+        switch (number) {
+            case 1:
+                mTitle = getString(R.string.title_section1);
+                break;
+            case 2:
+                mTitle = getString(R.string.title_section2);
+                break;
+            case 3:
+                mTitle = getString(R.string.title_section3);
+                break;
+        }
+    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            ((GroupFragment)fragments.get(0)).myOnKeyDown(keyCode);
-//
 
-            //and so on...
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -91,19 +106,17 @@ public class ActHome extends Activity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.act_home, menu);
             restoreActionBar();
-            MenuItem searchItem = menu.findItem(R.id.search);
-            mSearchView = (SearchView) searchItem.getActionView();
-            setupSearchView(searchItem);
             return true;
         }
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,66 +124,23 @@ public class ActHome extends Activity
         return super.onCreateOptionsMenu(menu);
     }
 
-    //設定searchView
-    private void setupSearchView(MenuItem searchItem) {
-
-        if (isAlwaysExpanded()) {
-            mSearchView.setIconifiedByDefault(false);
-        } else {
-            searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        }
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager != null) {
-            List<SearchableInfo> searchables = searchManager
-                    .getSearchablesInGlobalSearch();
-
-            SearchableInfo info = searchManager
-                    .getSearchableInfo(getComponentName());
-            for (SearchableInfo inf : searchables) {
-                if (inf.getSuggestAuthority() != null
-                        && inf.getSuggestAuthority().startsWith("applications")) {
-                    info = inf;
-                }
-            }
-            mSearchView.setSearchableInfo(info);
-        }
-
-        mSearchView.setOnQueryTextListener(this);
-    }
-    //是否開啟側邊欄
-    protected boolean isAlwaysExpanded() {
-        return false;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, TestActivity.class);
+            Intent intent = new Intent(this, ActGridSortSetting.class);
             startActivity(intent);
             return true;
         }
-
+        if (id == R.id.search) {
+            Intent intent = new Intent(this, ActSearch.class);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
-
-
 
 }

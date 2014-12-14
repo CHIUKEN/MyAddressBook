@@ -21,7 +21,7 @@ import java.util.List;
  * Time: 10:56 PM
  */
 public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
-    public CheeseDynamicAdapter(Context context, List<AddressBook> items, int columnCount) {
+    public CheeseDynamicAdapter(Context context, List<?> items, int columnCount) {
         super(context, items, columnCount);
     }
 

@@ -1,1 +1,1 @@
-include ':app', ':daogenerator', ':dynamicgrid', ':gc.materialdesign', ':library'
+include ':app', ':daogenerator', ':dynamicgrid', ':gc.materialdesign', ':library', ':QucikReturnlibrary'

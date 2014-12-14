@@ -9,25 +9,32 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.daogenerator.AddressBook;
+import com.daogenerator.Tag;
 import com.dynamicgrid.DynamicGridView;
+import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.CheeseDynamicAdapter;
 import com.myaddressbook.app.AppController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ActGridSortSetting extends Activity {
     private static final String TAG = ActGridSortSetting.class.getName();
     private DynamicGridView gridView;
+    private List<AddressBook> addressBookArrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_act_grid_sort_setting);
-        List<AddressBook> addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1,"");
+         addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(1, "");
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
-        gridView.setAdapter(new CheeseDynamicAdapter(this,
+        CheeseDynamicAdapter cheeseDynamicAdapter = new CheeseDynamicAdapter(this,
                 addressBookArrayList,
-                getResources().getInteger(R.integer.column_count)));
+                getResources().getInteger(R.integer.column_count));
+        gridView.setAdapter(cheeseDynamicAdapter);
 
         //
 //        add callback to stop edit mode if needed
@@ -76,16 +83,32 @@ public class ActGridSortSetting extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_submit) {
+            //TODO:UPDATE DB
+            gridView.stopEditMode();
+            for (int i = 0; i < addressBookArrayList.size(); i++) {
+                int a = gridView.getPositionForID(i);
+
+                addressBookArrayList.get(a).setSort(String.valueOf(i));
+                Log.d(TAG, "position:===" + addressBookArrayList.get(a).getPeopleName()+"====sort===:" + addressBookArrayList.get(a).getSort());
+            }
+            AppController.getInstance().getDaofManger().updateDataForSort(addressBookArrayList);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (gridView.isEditMode()) {
+            gridView.stopEditMode();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -30,7 +30,7 @@ public class ButtonRectangle extends Button {
 		super.onInitDefaultValues();
 		textButton = new TextView(getContext());
 		defaultTextColor = Color.WHITE;
-		rippleSpeed = 5.5f;
+		rippleSpeed = 30f;
 		minWidth = 80;
 		minHeight = 36;
 		backgroundResId = R.drawable.background_button_rectangle;

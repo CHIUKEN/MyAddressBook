@@ -27,16 +27,20 @@ import java.util.List;
  */
 public class NewPeopleAdapter extends SimpleCursorAdapter {
     private Context context;
-   // private Cursor cursor;
+    // private Cursor cursor;
     private LayoutInflater inflater;
-    private List<AddressBook>newAddressBookList;
-    private List<Contacts>contactsList;
+    private List<AddressBook> newAddressBookList;
+    private List<Contacts> contactsList;
+    private List<AddressBook> addressBookList;
+
     public NewPeopleAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
         super(context, layout, c, from, to, flags);
-        this.context=context;
+        this.context = context;
 
-        this.contactsList= AppController.getInstance().getContactsList();
+        this.contactsList = AppController.getInstance().getContactsList();
+        this.addressBookList = AppController.getInstance().getDaofManger().getall();
     }
+
     /**
      * Reuses old views if they have not already been reset and inflates new
      * views for the rows in the list that needs a new one. It the adds a
@@ -45,15 +49,15 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
      * the checkbox and let the super class do it's thing.
      */
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent)
-    {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Cursor c = getCursor();
         c.moveToPosition(position);
+        String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+
         final Contacts contacts = new Contacts();
         contacts.setContactsName(c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
         contacts.setContactsPhone(c.getString(c.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-        if (convertView == null)
-        {
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_newpeople, null);
         }
@@ -61,9 +65,9 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
         checkBox.setOncheckListener(new CheckBox.OnCheckListener() {
             @Override
             public void onCheck(boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     contactsList.add(contacts);
-                }else{
+                } else {
                     contactsList.remove(contacts);
                 }
             }
@@ -79,8 +83,7 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
      *
      * @return the selected items
      */
-    public List<Contacts> getSelectedItems()
-    {
+    public List<Contacts> getSelectedItems() {
         return contactsList;
     }
 //    public NewPeopleAdapter(Context context, Cursor c, int flags) {
@@ -108,7 +111,7 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
 //        return view;
 //    }
 
-//    @Override
+    //    @Override
 //    public void bindView(View view, Context context, Cursor cursor) {
 //        TextView userName = (TextView) view.findViewById(R.id.txt_name);
 //        userName.setText(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
@@ -132,11 +135,11 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
 //    }
     public static String getEmail(Context c, long id) {
         Uri uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Email._ID,
                 ContactsContract.CommonDataKinds.Email.CONTACT_ID,
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.TYPE };
+                ContactsContract.CommonDataKinds.Email.TYPE};
         String selection = ContactsContract.CommonDataKinds.Email.CONTACT_ID
                 + " = '" + id + "'";
         String sortOrder = ContactsContract.CommonDataKinds.Email.ADDRESS
@@ -152,7 +155,8 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
         }
         return null;
     }
-    private static final String[] PROJECTION = new String[] {
+
+    private static final String[] PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Email.CONTACT_ID,
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Email.DATA
@@ -162,7 +166,7 @@ public class NewPeopleAdapter extends SimpleCursorAdapter {
     private String GetEmail(Context context) {
         ContentResolver cr = context.getContentResolver();
         Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, null, null, null);
-        String displayName, address=null;
+        String displayName, address = null;
         if (cursor != null) {
             try {
                 final int contactIdIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID);

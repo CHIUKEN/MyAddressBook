@@ -11,4 +11,9 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/menu_cancel" />
+    <item
+        android:id="@+id/action_submit"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_submit" />
 </menu>

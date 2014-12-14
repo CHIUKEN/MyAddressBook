@@ -16,10 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.gc.materialdesign.views.ButtonFlat;
+import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.widgets.Dialog;
-import com.melnykov.fab.FloatingActionButton;
-import com.melnykov.fab.ScrollDirectionListener;
+
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.PeopleListAdapter;
 import com.myaddressbook.app.AppController;
@@ -32,7 +33,7 @@ public class ActPeopleList extends Activity {
     private String mParentNo;
     private String mParentName;
     private ListView mlistView;
-    private ButtonRectangle btn_newpeople;
+    private ButtonFloat btn_newpeople;
     private ButtonRectangle btn_newgroup;
     private TextView mTxt_no_data;
     private List<AddressBook> addressBookList;
@@ -52,24 +53,20 @@ public class ActPeopleList extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mlistView = (ListView) findViewById(R.id.listView_people);
-        btn_newpeople = (ButtonRectangle) findViewById(R.id.btn_newpeople);
+        btn_newpeople = (ButtonFloat) findViewById(R.id.btn_newpeople);
         btn_newgroup = (ButtonRectangle) findViewById(R.id.btn_newgroup);
         mTxt_no_data = (TextView) findViewById(R.id.txt_no_data);
-
-        if (mLevel == 3) {
+        //層級最後一層或由第一次未分類
+        if (mLevel == 3 || mParentNo == "1000000000") {
             btn_newgroup.setVisibility(View.GONE);
+        } else {
+
+            noClassify = AppController.getInstance().getDaofManger().getAddressBookList(mLevel + 1, mParentNo).get(0).getPeopleNo();
         }
-        noClassify = AppController.getInstance().getDaofManger().getAddressBookList(mLevel + 1, mParentNo).get(0).getPeopleNo();
-        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
+        addressBookList = new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
         mPeopleListAdapter = new PeopleListAdapter(this, addressBookList);
         mlistView.setAdapter(mPeopleListAdapter);
 
-        if (addressBookList.size() <= 0) {
-            mlistView.setVisibility(View.GONE);
-            mTxt_no_data.setVisibility(View.VISIBLE);
-        } else {
-            mTxt_no_data.setVisibility(View.GONE);
-        }
 
         //明細頁
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,7 +75,10 @@ public class ActPeopleList extends Activity {
                 AddressBook addressBook = addressBookList.get(i);
                 Intent intent = new Intent();
                 intent.setClass(ActPeopleList.this, ActPeopleDetail.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("Level", mLevel);
                 intent.putExtra("AddressBook", addressBook);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -88,7 +88,9 @@ public class ActPeopleList extends Activity {
             public void onClick(View view) {
                 Dialog dialog = new Dialog(ActPeopleList.this,
                         getResources().getString(R.string.dialog_title),
-                        getResources().getString(R.string.dialog_msg));
+                        getResources().getString(R.string.dialog_msg),
+                        getResources().getString(R.string.dialog_cancel),
+                        getResources().getString(R.string.dialog_goon));
 
                 dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
 
@@ -122,18 +124,6 @@ public class ActPeopleList extends Activity {
                 startActivityForResult(intent, 1);
             }
         });
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToListView(mlistView, new ScrollDirectionListener() {
-            @Override
-            public void onScrollDown() {
-               // Log.d("ListViewFragment", "onScrollDown()");
-            }
-
-            @Override
-            public void onScrollUp() {
-               // Log.d("ListViewFragment", "onScrollUp()");
-            }
-        });
 
 
     }
@@ -153,7 +143,7 @@ public class ActPeopleList extends Activity {
                 boolean isSuccess = AppController.getInstance().getDaofManger().InsertAdd(groupname, mLevel + 1, mParentNo);
                 if (isSuccess) {
                     //TODO:更改資料
-                    AppController.getInstance().getDaofManger().UpdateDataByCreateNewGroup(addressBookList, noClassify);
+                    AppController.getInstance().getDaofManger().updateDataByCreateNewGroup(addressBookList, noClassify);
                     //TODO:移至群組頁
                     Intent intent = new Intent();
                     if (mLevel + 1 == 2) {
@@ -180,6 +170,20 @@ public class ActPeopleList extends Activity {
             }
         });
         editDialog.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        addressBookList.clear();
+        addressBookList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo));
+        if (addressBookList.size() <= 0) {
+            mlistView.setVisibility(View.GONE);
+            mTxt_no_data.setVisibility(View.VISIBLE);
+        } else {
+            mTxt_no_data.setVisibility(View.GONE);
+        }
+        mPeopleListAdapter.notifyDataSetChanged();
     }
 
     @Override

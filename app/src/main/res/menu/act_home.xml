@@ -3,9 +3,9 @@
     tools:context="com.myaddressbook.Activities.ActHome">
     <item
         android:id="@+id/search"
-        android:actionViewClass="android.widget.SearchView"
+
         android:icon="@drawable/ic_action_search"
-        android:showAsAction="collapseActionView|ifRoom"
+        android:showAsAction="always"
         android:title="search_title"/>
     <item
         android:id="@+id/action_settings"

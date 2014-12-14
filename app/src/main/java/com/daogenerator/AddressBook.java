@@ -7,16 +7,15 @@ import java.io.Serializable;
 /**
  * Entity mapped to table ADDRESS_BOOK.
  */
-public class AddressBook implements Serializable{
+public class AddressBook implements Serializable {
 
-    private static final long serialVersionUID = 4284390034760408610L;
-
+    private static final long serialVersionUID = -400032910993513268L;
     private Long id;
     private String PeopleNo;
     private String PeopleName;
     private Integer LevelNum;
     private String ParentNo;
-    private String FileName;
+    private String ParentName;
     private String PeopleTel;
     private String PeoplePhone;
     private String PeopleEmail;
@@ -36,13 +35,13 @@ public class AddressBook implements Serializable{
         this.id = id;
     }
 
-    public AddressBook(Long id, String PeopleNo, String PeopleName, Integer LevelNum, String ParentNo, String FileName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId1, String Tag1Name, String TagId2, String Tag2Name, String DisplayColor, String Sort, java.util.Date CreateDate) {
+    public AddressBook(Long id, String PeopleNo, String PeopleName, Integer LevelNum, String ParentNo, String ParentName, String PeopleTel, String PeoplePhone, String PeopleEmail, String PeopleNote, String TagId1, String Tag1Name, String TagId2, String Tag2Name, String DisplayColor, String Sort, java.util.Date CreateDate) {
         this.id = id;
         this.PeopleNo = PeopleNo;
         this.PeopleName = PeopleName;
         this.LevelNum = LevelNum;
         this.ParentNo = ParentNo;
-        this.FileName = FileName;
+        this.ParentName = ParentName;
         this.PeopleTel = PeopleTel;
         this.PeoplePhone = PeoplePhone;
         this.PeopleEmail = PeopleEmail;
@@ -96,12 +95,12 @@ public class AddressBook implements Serializable{
         this.ParentNo = ParentNo;
     }
 
-    public String getFileName() {
-        return FileName;
+    public String getParentName() {
+        return ParentName;
     }
 
-    public void setFileName(String FileName) {
-        this.FileName = FileName;
+    public void setParentName(String ParentName) {
+        this.ParentName = ParentName;
     }
 
     public String getPeopleTel() {

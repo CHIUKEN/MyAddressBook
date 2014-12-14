@@ -20,12 +20,13 @@ import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActThree extends Activity {
     private GridView gridView;
     private ButtonRectangle btn_three_group;
-    private ButtonRectangle btn_three_people;
+
 
     private GroupAdapter groupAdapter;
     private List<AddressBook> addressBookList;
@@ -38,20 +39,25 @@ public class ActThree extends Activity {
         setContentView(R.layout.activity_act_three);
         gridView = (GridView) findViewById(R.id.gridview);
         btn_three_group = (ButtonRectangle) findViewById(R.id.btn_three_group);
-        btn_three_people = (ButtonRectangle) findViewById(R.id.btn_three_peole);
+
         mParentNo = getIntent().getStringExtra("ParentNo");
         mParentName = getIntent().getStringExtra("ParentName");
         getActionBar().setTitle(mParentName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo);
+        addressBookList =new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo);
         groupAdapter = new GroupAdapter(this, addressBookList);
         gridView.setAdapter(groupAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                AddressBook addressBook=addressBookList.get(position);
+                Intent intent=new Intent(ActThree.this,ActPeopleList.class);
+                intent.putExtra("ParentNo", addressBook.getPeopleNo());
+                intent.putExtra("ParentName", addressBook.getPeopleName());
+                intent.putExtra("Level", 3);
+                startActivity(intent);
             }
         });
         //新增群組
@@ -89,23 +95,16 @@ public class ActThree extends Activity {
                 editDialog.show();
             }
         });
-        //新增聯絡人
-        btn_three_people.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ActThree.this, ActCreatePeople.class);
-                Bundle bundle = new Bundle();
-                //傳目前所在的層級
-                bundle.putInt("Level", 3);
 
-                intent.putExtra("ParentNo", mParentNo);
-                intent.putExtra("ParentName", mParentName);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        addressBookList.clear();
+        addressBookList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(3, mParentNo));
+        groupAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

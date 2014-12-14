@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
@@ -24,17 +27,20 @@ import com.myaddressbook.app.AppController;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ActSecond extends Activity {
     private GridView mGridView;
     private ButtonRectangle btn_second_group;
-    private ButtonRectangle btn_second_people;
+
     private GroupAdapter mGroupAdapter;
     private List<AddressBook> addressBookList;
     private String mParentNo;
     private String mParentName;
     private TextView mTxt_no_data;
+    private ButtonFloat btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,21 +52,22 @@ public class ActSecond extends Activity {
         getActionBar().setTitle(mParentName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addressBookList = AppController.getInstance().getDaofManger().getAddressBookList(2, mParentNo);
+        addressBookList = new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(2, mParentNo);
 
         mGridView = (GridView) findViewById(R.id.gridview);
         btn_second_group = (ButtonRectangle) findViewById(R.id.btn_second_group);
-        btn_second_people = (ButtonRectangle) findViewById(R.id.btn_second_people);
+
         mTxt_no_data = (TextView) findViewById(R.id.txt_no_data);
+
 
         mGroupAdapter = new GroupAdapter(this, addressBookList);
         mGridView.setAdapter(mGroupAdapter);
-        Log.d("", addressBookList.get(0).getPeopleNo());
 
-        if (addressBookList.size() <= 1) {
-            mTxt_no_data.setVisibility(View.VISIBLE);
-            mGridView.setVisibility(View.GONE);
-        }
+
+//        if (addressBookList.size() <= 1) {
+//            mTxt_no_data.setVisibility(View.VISIBLE);
+//            mGridView.setVisibility(View.GONE);
+//        }
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -79,6 +86,7 @@ public class ActSecond extends Activity {
                 startActivity(intent);
             }
         });
+
         //新增群組
         btn_second_group.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,26 +124,25 @@ public class ActSecond extends Activity {
                     }
                 });
                 editDialog.show();
-            }
-        });
-        //新增聯絡人
-        btn_second_people.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ActSecond.this, ActCreatePeople.class);
-                Bundle bundle = new Bundle();
-                //傳目前所在的層級
-                bundle.putInt("Level", 2);
 
-                intent.putExtra("ParentNo", mParentNo);
-                intent.putExtra("ParentName", mParentName);
-                intent.putExtras(bundle);
-                startActivity(intent);
             }
+
+
         });
+
 
     }
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        addressBookList.clear();
+        addressBookList.addAll(AppController.getInstance().getDaofManger().getAddressBookList(2, mParentNo));
+        if (addressBookList.size() <= 1) {
+            mTxt_no_data.setVisibility(View.VISIBLE);
+            mGridView.setVisibility(View.GONE);
+        }
+        mGroupAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

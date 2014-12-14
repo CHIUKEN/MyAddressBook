@@ -9,10 +9,16 @@
     <color name="blue">#1E88E5</color>
     <color name="item_color">#cccccc</color>
     <color name="no_data_color">#555555</color>
+    <color name="layout_down">#bfbfbf</color>
+    <color name="layout_selector">#cccccc</color>
 
     <color name="primary">#3f51b5</color>
     <color name="primary_pressed">#303f9f</color>
     <color name="ripple">#ff80ab</color>
     <color name="accent">#ff4081</color>
     <color name="accent_pressed">#f50057</color>
+
+    <color name="header_normal">#ffe74c3c</color>
+    <color name="header_pressed">#ffc0392b</color>
+    <color name="menu_section_header">#FFDDDDDD</color>
 </resources>

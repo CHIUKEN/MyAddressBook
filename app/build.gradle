@@ -29,7 +29,9 @@ dependencies {
     compile project(':dynamicgrid')
     compile project(':gc.materialdesign')
     compile project(':library')
-
+    compile project(':QucikReturnlibrary')
+    compile 'se.emilsjolander:stickylistheaders:2.1.5'
+    compile 'me.drakeet.materialdialog:library:1.2.2'
     compile 'com.android.support:support-v4:21.0.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
         transitive = true;
