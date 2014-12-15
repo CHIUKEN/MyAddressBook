@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/txtphone"
+            android:id="@+id/txt_phone"
             android:layout_below="@+id/txt_name"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

@@ -6,12 +6,15 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.gc.materialdesign.widgets.ColorSelector;
 import com.myaddressbook.fragments.AboutFragment;
 import com.myaddressbook.fragments.GroupFragment;
 import com.myaddressbook.fragments.TagFragment;
@@ -125,7 +128,7 @@ public class ActHome extends Activity
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_setting_group) {
             Intent intent = new Intent(this, ActGridSortSetting.class);
             Bundle bundle = new Bundle();
             bundle.putInt("Level", 1);
@@ -134,9 +137,22 @@ public class ActHome extends Activity
             startActivity(intent);
             return true;
         }
+        if(id==R.id.action_setting_tag){
+            Intent intent=new Intent(this,ActGridTagSortSetting.class);
+            startActivity(intent);
+            return true;
+        }
         if (id == R.id.search) {
             Intent intent = new Intent(this, ActSearch.class);
             startActivity(intent);
+//            ColorSelector colorSelector=new ColorSelector(this, Color.RED,new ColorSelector.OnColorSelectedListener() {
+//                @Override
+//                public void onColorSelected(int color) {
+//                    String hexColor = String.format("#%06X", (0xFFFFFF & color));
+//                    Log.d("==========",hexColor);
+//                }
+//            });
+//            colorSelector.show();
             return true;
         }
         return super.onOptionsItemSelected(item);

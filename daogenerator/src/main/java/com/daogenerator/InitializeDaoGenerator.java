@@ -55,6 +55,8 @@ public class InitializeDaoGenerator {
         entity.addIdProperty().autoincrement().primaryKey();
         entity.addStringProperty("TagId");
         entity.addStringProperty("TagName");
+        entity.addStringProperty("Sort");
+        entity.addStringProperty("TagDisplayColor");
 
     }
     private static void addCustomerOrder(Schema schema) {

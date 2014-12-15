@@ -26,6 +26,8 @@ public class TagDao extends AbstractDao<Tag, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property TagId = new Property(1, String.class, "TagId", false, "TAG_ID");
         public final static Property TagName = new Property(2, String.class, "TagName", false, "TAG_NAME");
+        public final static Property Sort = new Property(3, String.class, "Sort", false, "SORT");
+        public final static Property TagDisplayColor = new Property(4, String.class, "TagDisplayColor", false, "TAG_DISPLAY_COLOR");
     };
 
 
@@ -43,7 +45,9 @@ public class TagDao extends AbstractDao<Tag, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'TAG' (" + //
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'TAG_ID' TEXT," + // 1: TagId
-                "'TAG_NAME' TEXT);"); // 2: TagName
+                "'TAG_NAME' TEXT," + // 2: TagName
+                "'SORT' TEXT," + // 3: Sort
+                "'TAG_DISPLAY_COLOR' TEXT);"); // 4: TagDisplayColor
     }
 
     /** Drops the underlying database table. */
@@ -71,6 +75,16 @@ public class TagDao extends AbstractDao<Tag, Long> {
         if (TagName != null) {
             stmt.bindString(3, TagName);
         }
+ 
+        String Sort = entity.getSort();
+        if (Sort != null) {
+            stmt.bindString(4, Sort);
+        }
+ 
+        String TagDisplayColor = entity.getTagDisplayColor();
+        if (TagDisplayColor != null) {
+            stmt.bindString(5, TagDisplayColor);
+        }
     }
 
     /** @inheritdoc */
@@ -85,7 +99,9 @@ public class TagDao extends AbstractDao<Tag, Long> {
         Tag entity = new Tag( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // TagId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // TagName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // TagName
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // Sort
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // TagDisplayColor
         );
         return entity;
     }
@@ -96,6 +112,8 @@ public class TagDao extends AbstractDao<Tag, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setTagId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setTagName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setSort(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setTagDisplayColor(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     /** @inheritdoc */

@@ -3,6 +3,7 @@ package com.myaddressbook.util;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.daogenerator.AddressBook;
 import com.daogenerator.AddressBookDao;
@@ -166,8 +167,50 @@ public class DaoManager {
     }
 
     //新增Tag
-    public void insertTag(Tag tag) {
-        tagDao.insert(tag);
+    public boolean insertTag(String tagName) {
+        Tag old = tagDao.queryBuilder().limit(1).unique();
+        Tag newTag = null;
+        try {
+            if (old == null) {
+                newTag = new Tag(null, "1", tagName, "1000", "#3f51b5");
+            } else {
+                newTag = new Tag(null, String.valueOf(old.getId() + 1), tagName, String.valueOf(Integer.parseInt(old.getSort()) + 1), "#3f51b5");
+
+            }
+            tagDao.insert(newTag);
+            return true;
+        } catch (Exception ex) {
+            Log.e("", ex.getMessage());
+            return false;
+        }
+    }
+
+    //取得全部的tag
+    public List<Tag> getAllTag() {
+        return tagDao.queryBuilder().orderAsc(TagDao.Properties.Sort).list();
+    }
+
+    //取得tagid的集合
+    public List<AddressBook> getAddressBookByTag(String tagid) {
+        QueryBuilder<AddressBook> query = getAddressBookQuery();
+        query.where(AddressBookDao.Properties.LevelNum.eq(4));
+        query.or(AddressBookDao.Properties.TagId1.eq(tagid),
+                AddressBookDao.Properties.TagId2.eq(tagid));
+        query.where(AddressBookDao.Properties.TagId1.notEq(""));
+        query.where(AddressBookDao.Properties.TagId2.notEq(""));
+
+        return query.list();
+    }
+
+    public void updateSingleTag(Tag tag) {
+        tagDao.update(tag);
+    }
+
+    //更改標籤排序
+    public void updateTagSort(List<Tag> tagList) {
+        for (int i = 0; i < tagList.size(); i++) {
+            tagDao.update(tagList.get(i));
+        }
     }
 
     //取得層級中的資料
@@ -217,6 +260,7 @@ public class DaoManager {
         return addressBookDao.queryBuilder();
     }
 
+    //篩選群組
     public List<AddressBook> filterGroup(int Level, String parentNo, String strQuery) {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         query.where(AddressBookDao.Properties.LevelNum.eq(Level), AddressBookDao.Properties.ParentNo.eq(parentNo),
@@ -230,12 +274,18 @@ public class DaoManager {
         return query.list();
     }
 
-    //更改排序
+    //更改群組排序
     public void updateDataForSort(List<AddressBook> addressBookList) {
         for (int i = 0; i < addressBookList.size(); i++) {
-
             addressBookDao.update(addressBookList.get(i));
-
         }
     }
+
+    //刪除資料
+    public void deleteList(List<AddressBook> addressBookList) {
+        for (int i = 0; i < addressBookList.size(); i++) {
+            addressBookDao.delete(addressBookList.get(i));
+        }
+    }
+
 }

@@ -278,6 +278,7 @@ public class ActPeopleList extends Activity {
         //設定排序
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, ActListSortSetting.class);
+            intent.putExtra("ParentNo", mParentNo);
             startActivity(intent);
             return true;
         }

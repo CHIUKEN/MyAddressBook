@@ -43,7 +43,7 @@ public class ActSecond extends Activity {
     private String mParentNo;
     private String mParentName;
     private TextView mTxt_no_data;
-    private ButtonFloat btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -47,6 +47,7 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
     private String mParentNo;
     private String mParentName;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         mlevel = getIntent().getIntExtra("Level", -1);
         mParentNo = getIntent().getStringExtra("ParentNo");
         mParentName = getIntent().getStringExtra("ParentName");
+
         //顯示欄位
         String[] fields = new String[]{
                 Data.DISPLAY_NAME, Phone.NUMBER,
@@ -67,7 +69,7 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
 
         Cursor cursor = getContacts();
         mAdapter = new NewPeopleAdapter(this, R.layout.item_newpeople, cursor,
-                fields, new int[]{R.id.txt_name, R.id.txtphone}, 0);
+                fields, new int[]{R.id.txt_name, R.id.txt_phone}, 0);
 
         //mNewPeopleAdapter = new NewPeopleAdapter(this, cursor, 0);
 
@@ -195,7 +197,7 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
                     Data.DISPLAY_NAME, Phone.NUMBER,
             };
             mAdapter = new NewPeopleAdapter(getApplicationContext(), R.layout.item_newpeople, cursor,
-                    fields, new int[]{R.id.txt_name, R.id.txtphone}, 0);
+                    fields, new int[]{R.id.txt_name, R.id.txt_phone}, 0);
             mlistView.setAdapter(mAdapter);
         } else {
             mAdapter.swapCursor(cursor);

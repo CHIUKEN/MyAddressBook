@@ -84,6 +84,18 @@
             android:name="com.myaddressbook.Test2Activity"
             android:label="@string/title_activity_test2" >
         </activity>
+        <activity
+            android:name="com.myaddressbook.Activities.ActTagPeopleList"
+            android:label="@string/title_activity_act_tag_people_list" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.Activities.ActCreatePeopleTag"
+            android:label="@string/title_activity_act_create_people_tag" >
+        </activity>
+        <activity
+            android:name="com.myaddressbook.Activities.ActGridTagSortSetting"
+            android:label="@string/title_activity_act_grid_tag_sort_setting" >
+        </activity>
     </application>
 
 </manifest>

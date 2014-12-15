@@ -38,6 +38,7 @@ import com.myaddressbook.adapter.CheeseDynamicAdapter;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
 import com.myaddressbook.util.DaoManager;
+import com.myaddressbook.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -232,6 +233,7 @@ public class GroupFragment extends Fragment {
                 editText.setTextSize(18);
                 editDialog.setContentView(editText);
 
+//                final MaterialDialog editDialog= Utils.newMaterialDialog(getActivity(),R.string.btn_new_group);
                 editDialog.setPositiveButton(R.string.alert_submit, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -9,48 +9,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
 import com.daogenerator.Tag;
 import com.dynamicgrid.DynamicGridView;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.ColorSelector;
-import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
-import com.myaddressbook.adapter.CheeseDynamicAdapter;
+
+import com.myaddressbook.adapter.TagAdapter;
+import com.myaddressbook.adapter.TagDynamicGridAdapter;
 import com.myaddressbook.app.AppController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
-public class ActGridSortSetting extends Activity {
+public class ActGridTagSortSetting extends Activity {
     private static final String TAG = ActGridSortSetting.class.getName();
-    private DynamicGridView gridView;
-    private List<AddressBook> addressBookArrayList;
-    private int mLevel;
-    private String mParentNo;
-    CheeseDynamicAdapter mDynamicAdapter;
+    private DynamicGridView mGridView;
+    private List<Tag> tagList;
+
+    TagDynamicGridAdapter tagAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_act_grid_tag_sort_setting);
+        mGridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
 
-        setContentView(R.layout.activity_act_grid_sort_setting);
-        mLevel = getIntent().getIntExtra("Level", -1);
-        mParentNo = getIntent().getStringExtra("ParentNo");
-        addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(mLevel, mParentNo);
-
-        gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
-        mDynamicAdapter = new CheeseDynamicAdapter(this,
-                addressBookArrayList,
-                getResources().getInteger(R.integer.column_count));
-        gridView.setAdapter(mDynamicAdapter);
-
-        gridView.setOnDragListener(new DynamicGridView.OnDragListener() {
+        tagList = AppController.getInstance().getDaofManger().getAllTag();
+        tagAdapter = new TagDynamicGridAdapter(this, tagList, 3);
+        mGridView.setAdapter(tagAdapter);
+        mGridView.setOnDragListener(new DynamicGridView.OnDragListener() {
             @Override
             public void onDragStarted(int position) {
                 Log.d(TAG, "drag started at position " + position);
@@ -60,32 +55,31 @@ public class ActGridSortSetting extends Activity {
             public void onDragPositionsChanged(int oldPosition, int newPosition) {
                 Log.d(TAG, String.format("drag item position changed from %d to %d", oldPosition, newPosition));
 
-                AddressBook oldBook = addressBookArrayList.get(oldPosition);
-                addressBookArrayList.remove(oldPosition);
-                addressBookArrayList.add(newPosition, oldBook);
+                Tag oldBook = tagList.get(oldPosition);
+                tagList.remove(oldPosition);
+                tagList.add(newPosition, oldBook);
 
             }
         });
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                gridView.startEditMode(position);
+                mGridView.startEditMode(position);
                 return true;
             }
         });
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final AddressBook selectPosition = addressBookArrayList.get(position);
-                final MaterialDialog alert = new MaterialDialog(ActGridSortSetting.this);
+                final Tag selectPosition = tagList.get(position);
+                final MaterialDialog alert = new MaterialDialog(ActGridTagSortSetting.this);
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                        ActGridSortSetting.this,
+                        ActGridTagSortSetting.this,
                         android.R.layout.simple_list_item_1
                 );
                 arrayAdapter.add(getResources().getString(R.string.dialog_item1));
                 arrayAdapter.add(getResources().getString(R.string.dialog_item2));
-                ListView listView = new ListView(ActGridSortSetting.this);
+                ListView listView = new ListView(ActGridTagSortSetting.this);
                 float scale = getResources().getDisplayMetrics().density;
                 int dpAsPixels = (int) (8 * scale + 0.5f);
                 listView.setPadding(0, dpAsPixels, 0, dpAsPixels);
@@ -112,11 +106,11 @@ public class ActGridSortSetting extends Activity {
         });
     }
 
-    private void showChangeTitle(final AddressBook addressBook) {
-        final MaterialDialog editDialog = new MaterialDialog(ActGridSortSetting.this)
+    private void showChangeTitle(final Tag tag) {
+        final MaterialDialog editDialog = new MaterialDialog(ActGridTagSortSetting.this)
                 .setTitle(R.string.btn_new_group);
 
-        final MaterialEditText editText = new MaterialEditText(ActGridSortSetting.this);
+        final MaterialEditText editText = new MaterialEditText(ActGridTagSortSetting.this);
 
         editText.setHint(R.string.edit_hint_text);
         editText.setSingleLineEllipsis(true);
@@ -126,7 +120,7 @@ public class ActGridSortSetting extends Activity {
         editText.setBaseColor(getResources().getColor(R.color.base_color));
         editText.setPrimaryColor(getResources().getColor(R.color.primaryColor));
         editText.setErrorColor(getResources().getColor(R.color.error_color));
-        editText.setText(addressBook.getPeopleName());
+        editText.setText(tag.getTagName());
         editText.setSelection(editText.length());
         editText.setTextSize(18);
         editDialog.setContentView(editText);
@@ -136,13 +130,13 @@ public class ActGridSortSetting extends Activity {
             public void onClick(View view) {
                 String groupname = editText.getText().toString().trim();
                 if (groupname.length() > 10) {
-                    Toast.makeText(ActGridSortSetting.this, R.string.toast_edit_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActGridTagSortSetting.this, R.string.toast_edit_error, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //TODO:UPDATE DB
-                addressBook.setPeopleName(groupname);
-                AppController.getInstance().getDaofManger().updateSingleAddressbook(addressBook);
-                mDynamicAdapter.notifyDataSetChanged();
+                tag.setTagName(groupname);
+                AppController.getInstance().getDaofManger().updateSingleTag(tag);
+                tagAdapter.notifyDataSetChanged();
                 editDialog.dismiss();
             }
         });
@@ -157,17 +151,17 @@ public class ActGridSortSetting extends Activity {
         editDialog.show();
     }
 
-    private void showChangeColor(final AddressBook addressBook) {
+    private void showChangeColor(final Tag tag) {
 
-        ColorSelector colorSelector = new ColorSelector(this, Color.parseColor(addressBook.getDisplayColor()), new ColorSelector.OnColorSelectedListener() {
+        ColorSelector colorSelector = new ColorSelector(this, Color.parseColor(tag.getTagDisplayColor()), new ColorSelector.OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
                 String hexColor = String.format("#%06X", (0xFFFFFF & color));
                 Log.d("==========", hexColor);
                 //TODO: UPDATE DB
-                addressBook.setDisplayColor(hexColor);
-                AppController.getInstance().getDaofManger().updateSingleAddressbook(addressBook);
-                mDynamicAdapter.notifyDataSetChanged();
+                tag.setTagDisplayColor(hexColor);
+                AppController.getInstance().getDaofManger().updateSingleTag(tag);
+                tagAdapter.notifyDataSetChanged();
             }
         });
         colorSelector.show();
@@ -176,7 +170,7 @@ public class ActGridSortSetting extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_act_grid_sort_setting, menu);
+        getMenuInflater().inflate(R.menu.menu_act_grid_tag_sort_setting, menu);
         return true;
     }
 
@@ -188,25 +182,16 @@ public class ActGridSortSetting extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_submit) {
             //TODO:UPDATE DB
-            gridView.stopEditMode();
-            for (int i = 0; i < addressBookArrayList.size(); i++) {
-                addressBookArrayList.get(i).setSort(String.valueOf(1000 + i));
+            mGridView.stopEditMode();
+            for (int i = 0; i < tagList.size(); i++) {
+                tagList.get(i).setSort(String.valueOf(1000 + i));
 
             }
-            AppController.getInstance().getDaofManger().updateDataForSort(addressBookArrayList);
+            AppController.getInstance().getDaofManger().updateTagSort(tagList);
             finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (gridView.isEditMode()) {
-            gridView.stopEditMode();
-        } else {
-            super.onBackPressed();
-        }
     }
 }

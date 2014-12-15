@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Entity mapped to table ADDRESS_BOOK.
  */
-public class AddressBook implements Serializable {
+public class AddressBook implements Serializable{
 
     private static final long serialVersionUID = -400032910993513268L;
     private Long id;
