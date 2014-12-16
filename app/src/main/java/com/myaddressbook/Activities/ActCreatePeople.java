@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.myaddressbook.Model.Contacts;
 import com.myaddressbook.R;
+import com.myaddressbook.adapter.ContactsAdapter;
 import com.myaddressbook.adapter.NewPeopleAdapter;
 import com.myaddressbook.app.AppController;
 import com.myaddressbook.util.DaoManager;
@@ -35,18 +36,19 @@ import static android.provider.ContactsContract.*;
 import static android.provider.ContactsContract.CommonDataKinds.*;
 
 
-public class ActCreatePeople extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ActCreatePeople extends Activity {
     private static String Tag = ActCreatePeople.class.getName();
     private ListView mlistView;
-    private NewPeopleAdapter mAdapter;
-    //private NewPeopleAdapter mNewPeopleAdapter;
+
+
     private List<Contacts> mContactsList;
-    private LoaderManager mloaderManager;
+
     private Uri uri = Phone.CONTENT_URI;
     private int mlevel;
     private String mParentNo;
     private String mParentName;
-
+    private ArrayList<Contacts> listContacts;
+    private ContactsAdapter contactsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,63 +58,108 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         setContentView(R.layout.activity_act_create_people);
         mlistView = (ListView) findViewById(R.id.listView_new);
         mContactsList = new ArrayList<Contacts>();
-        mloaderManager = getLoaderManager();
-        mloaderManager.initLoader(0, null, this);
+
         mlevel = getIntent().getIntExtra("Level", -1);
         mParentNo = getIntent().getStringExtra("ParentNo");
         mParentName = getIntent().getStringExtra("ParentName");
 
-        //顯示欄位
-        String[] fields = new String[]{
-                Data.DISPLAY_NAME, Phone.NUMBER,
-        };
 
-        Cursor cursor = getContacts();
-        mAdapter = new NewPeopleAdapter(this, R.layout.item_newpeople, cursor,
-                fields, new int[]{R.id.txt_name, R.id.txt_phone}, 0);
+        listContacts = fetchAll();
 
-        //mNewPeopleAdapter = new NewPeopleAdapter(this, cursor, 0);
-
-//        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //add list
-//
-//                Cursor c = (Cursor) mAdapter.getItem(position);
-//                Contacts contacts = new Contacts();
-//                contacts.setContactsPhone(c.getString(c.getColumnIndex(Phone.NUMBER)));
-//                contacts.setContactsName(c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-//
-//                if (isSelected(contacts)) {
-//                    contactsList.remove(contacts);
-//                } else {
-//                    contactsList.add(contacts);
-//                }
-//                Log.i(Tag, String.valueOf(contactsList.size()));
-//            }
-//        });
-
-        mlistView.setAdapter(mAdapter);
+        contactsAdapter = new ContactsAdapter(this, listContacts);
+        mlistView.setAdapter(contactsAdapter);
+        contactsAdapter.notifyDataSetChanged();
 
     }
 
-    /*
-    * Get Cursor
-    * */
-    private Cursor getContacts() {
-        uri = Phone.CONTENT_URI;// ContactsContract.Contacts.CONTENT_URI;
-        //篩選條件
-        String[] projection = new String[]{
-                ContactsContract.Contacts.Data._ID,
-                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                Phone.NUMBER, Email._ID};
+    public void fetchContactNumbers(Cursor cursor, Contacts contact) {
+        // Get numbers
+        final String[] numberProjection = new String[]{Phone.NUMBER, Phone.TYPE,};
+        Cursor phone = new CursorLoader(this, Phone.CONTENT_URI, numberProjection,
+                Phone.CONTACT_ID + "= ?",
+                new String[]{String.valueOf(contact.id)},
+                null).loadInBackground();
 
-        String selection = null;
-        String[] selectionArgs = null;
-        //排序
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " DESC";
-        return getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        if (phone.moveToFirst()) {
+            final int contactNumberColumnIndex = phone.getColumnIndex(Phone.NUMBER);
+            final int contactTypeColumnIndex = phone.getColumnIndex(Phone.TYPE);
+
+            while (!phone.isAfterLast()) {
+                final String number = phone.getString(contactNumberColumnIndex);
+                final int type = phone.getInt(contactTypeColumnIndex);
+                String customLabel = "Custom";
+                CharSequence phoneType =
+                        ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                                this.getResources(), type, customLabel);
+                contact.addNumber(number, phoneType.toString());
+                phone.moveToNext();
+            }
+
+        }
+        phone.close();
+    }
+
+    public ArrayList<Contacts> fetchAll() {
+        ArrayList<Contacts> listContacts = new ArrayList<Contacts>();
+        CursorLoader cursorLoader = new CursorLoader(this,
+                ContactsContract.Contacts.CONTENT_URI, // uri
+                null, // the columns to retrieve (all)
+                null, // the selection criteria (none)
+                null, // the selection args (none)
+                null // the sort order (default)
+        );
+        // This should probably be run from an AsyncTask
+        Cursor c = cursorLoader.loadInBackground();
+        if (c.moveToFirst()) {
+            do {
+                Contacts contact = loadContactData(c);
+                listContacts.add(contact);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return listContacts;
+    }
+
+    private Contacts loadContactData(Cursor c) {
+        // Get Contact ID
+        int idIndex = c.getColumnIndex(ContactsContract.Contacts._ID);
+        String contactId = c.getString(idIndex);
+        // Get Contact Name
+        int nameIndex = c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+        String contactDisplayName = c.getString(nameIndex);
+        Contacts contact = new Contacts(contactId, contactDisplayName);
+        fetchContactNumbers(c, contact);
+        fetchContactEmails(c, contact);
+        return contact;
+    }
+
+    public void fetchContactEmails(Cursor cursor, Contacts contact) {
+        // Get email
+        final String[] emailProjection = new String[]{Email.DATA, Email.TYPE};
+
+        Cursor email = new CursorLoader(this, Email.CONTENT_URI, emailProjection,
+                Email.CONTACT_ID + "= ?",
+                new String[]{String.valueOf(contact.id)},
+                null).loadInBackground();
+
+        if (email.moveToFirst()) {
+            final int contactEmailColumnIndex = email.getColumnIndex(Email.DATA);
+            final int contactTypeColumnIndex = email.getColumnIndex(Email.TYPE);
+
+            while (!email.isAfterLast()) {
+                final String address = email.getString(contactEmailColumnIndex);
+                final int type = email.getInt(contactTypeColumnIndex);
+                String customLabel = "Custom";
+                CharSequence emailType =
+                        ContactsContract.CommonDataKinds.Email.getTypeLabel(
+                                this.getResources(), type, customLabel);
+                contact.addEmail(address, emailType.toString());
+                email.moveToNext();
+            }
+
+        }
+
+        email.close();
     }
 
 
@@ -131,29 +178,35 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         //全選
         if (id == R.id.action_all) {
             mContactsList = AppController.getInstance().getContactsList();
-            Cursor cursor = mAdapter.getCursor();
-            if (cursor.moveToFirst()) {
-                do {
-                    try {
-                        Contacts contacts = new Contacts();
-                        contacts.setContactsName(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
-                        contacts.setContactsPhone(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                        if (!mContactsList.contains(contacts)) {
-                            mContactsList.add(contacts);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } while (cursor.moveToNext());
+            for (Contacts contacts : listContacts) {
+                if (!mContactsList.contains(contacts)) {
+                    mContactsList.add(contacts);
+                }
             }
-            mAdapter.notifyDataSetChanged();
+            contactsAdapter.notifyDataSetChanged();
+//            Cursor cursor = contactsAdapter.getCursor();
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    try {
+//                        Contacts contacts = new Contacts();
+//                        contacts.setContactsName(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)));
+//                        contacts.setContactsPhone(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+//                        if (!mContactsList.contains(contacts)) {
+//                            mContactsList.add(contacts);
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                } while (cursor.moveToNext());
+//            }
+//            contactsAdapter.notifyDataSetChanged();
 
             return true;
         }
         //確認
         if (id == R.id.action_ok) {
             //TODO:Insert to db
-            mContactsList = mAdapter.getSelectedItems();
+            mContactsList = contactsAdapter.getSelectedItems();
             DaoManager daoManager = AppController.getInstance().getDaofManger();
             daoManager.InsertPeopleList(mParentNo, mParentName, mContactsList);
             setResult(RESULT_OK);
@@ -170,44 +223,6 @@ public class ActCreatePeople extends Activity implements LoaderManager.LoaderCal
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = new String[]{
-                ContactsContract.Contacts.Data._ID,
-                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                Phone.NUMBER, Email._ID};
-
-        String selection = null;
-        String[] selectionArgs = null;
-        //排序
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " DESC";
-        CursorLoader cursorLoader = new CursorLoader(this, Phone.CONTENT_URI, projection, selection, selectionArgs,
-                sortOrder);
-
-        return cursorLoader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        if (mAdapter == null) {
-            //顯示欄位
-            String[] fields = new String[]{
-                    Data.DISPLAY_NAME, Phone.NUMBER,
-            };
-            mAdapter = new NewPeopleAdapter(getApplicationContext(), R.layout.item_newpeople, cursor,
-                    fields, new int[]{R.id.txt_name, R.id.txt_phone}, 0);
-            mlistView.setAdapter(mAdapter);
-        } else {
-            mAdapter.swapCursor(cursor);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        mAdapter.swapCursor(null);
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -137,7 +137,7 @@ public class DaoManager {
             AddressBook addressBook = getAddressBookQuery().where(AddressBookDao.Properties.LevelNum.eq(4),
                     AddressBookDao.Properties.ParentNo.eq(parentNo)).orderAsc(AddressBookDao.Properties.Sort).limit(1).unique();
             long peopleId;
-            int sort = 1;
+            int sort = 1000;
 
             if (addressBook == null) {
                 peopleId = Long.parseLong(parentNo) + 1;
@@ -268,6 +268,7 @@ public class DaoManager {
         return query.list();
     }
 
+    //快速搜尋
     public List<AddressBook> searchAll(String strQuery) {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         query.where(AddressBookDao.Properties.LevelNum.eq(4), AddressBookDao.Properties.PeopleName.like(strQuery)).orderDesc(AddressBookDao.Properties.PeopleNo);
@@ -288,4 +289,48 @@ public class DaoManager {
         }
     }
 
+    //重新設定
+    public void deleteAll() {
+        addressBookDao.deleteAll();
+        tagDao.deleteAll();
+        AddressBook addressBook0 = new AddressBook(null, "1000000000", "未分類", 1, "", "", "", "", "", "", "", "", "", "", "#770077", "1000", new Date());
+        AddressBook addressBook1 = new AddressBook(null, "1010000000", "未分類", 2, "1000000000", "", "", "", "", "", "", "", "", "", "#770077", "1000", new Date());
+        AddressBook addressBook2 = new AddressBook(null, "1010010000", "未分類", 3, "1010000000", "", "", "", "", "", "", "", "", "", "#770077", "1000", new Date());
+        addressBookDao.insert(addressBook0);
+        addressBookDao.insert(addressBook1);
+        addressBookDao.insert(addressBook2);
+        InsertAdd("家庭", 1, "");
+        InsertAdd("工作", 1, "");
+    }
+
+    //刪除群組
+    public void deletedGroup(AddressBook addressBook) {
+        String peopleId = addressBook.getPeopleNo();
+        //delete self
+        QueryBuilder<AddressBook> queryfirst = getAddressBookQuery();
+        queryfirst.where(AddressBookDao.Properties.LevelNum.eq(addressBook.getLevelNum()), AddressBookDao.Properties.PeopleNo.eq(addressBook.getPeopleNo()));
+        deleteList(queryfirst.list());
+        int level = addressBook.getLevelNum() + 1;
+        for (AddressBook n : addressBookDao.loadAll()) {
+            Log.d("db before data:", "=getPeopleNo()=" + n.getPeopleNo() + "=getLevelNum()=" + n.getLevelNum() + "=getParentNo=" + n.getParentNo()+"=getPeopleName=" + n.getPeopleName());
+
+        }
+        do {
+            QueryBuilder<AddressBook> query = getAddressBookQuery();
+            query.where(AddressBookDao.Properties.LevelNum.eq(level), AddressBookDao.Properties.ParentNo.eq(peopleId));
+            Log.d("db select data:", "=level=" + level + "=peopleId()=" + peopleId);
+            if (query.list().size() > 0) {
+                peopleId = query.list().get(0).getPeopleNo();
+                //TODO 繼續往下刪...
+                deleteList(query.list());
+            }
+            level++;
+
+        } while (level != 4);
+
+        for (AddressBook n : addressBookDao.loadAll()) {
+            Log.d("db after data:", "=getPeopleNo()=" + n.getPeopleNo() + "=getLevelNum()=" + n.getLevelNum() + "=getParentNo=" + n.getParentNo()+"=getPeopleName=" + n.getPeopleName());
+
+        }
+    }
 }

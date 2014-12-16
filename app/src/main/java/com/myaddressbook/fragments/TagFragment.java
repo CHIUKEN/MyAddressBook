@@ -26,21 +26,10 @@ import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TagFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TagFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class TagFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String ARG_SECTION_NUMBER = "section_number2";
 
+public class TagFragment extends Fragment {
+
+    private static final String ARG_SECTION_NUMBER = "section_number2";
 
     private GridView mGridView;
     private ButtonFloat mBtn_newpeople;
@@ -49,8 +38,6 @@ public class TagFragment extends Fragment {
     private TagAdapter tagAdapter;
 //    private OnFragmentInteractionListener mListener;
 
-
-    // TODO: Rename and change types and number of parameters
     public static TagFragment newInstance(int sectionNumber) {
         TagFragment fragment = new TagFragment();
         Bundle args = new Bundle();
@@ -147,7 +134,13 @@ public class TagFragment extends Fragment {
 
         return view;
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        tagList.clear();
+        tagList.addAll(AppController.getInstance().getDaofManger().getAllTag());
+        tagAdapter.notifyDataSetChanged();
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {

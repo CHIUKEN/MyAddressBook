@@ -1,6 +1,7 @@
 package com.myaddressbook.Activities;
 
 import android.app.Activity;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,17 +14,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
-import com.daogenerator.Tag;
+
 import com.dynamicgrid.DynamicGridView;
 import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.ColorSelector;
-import com.myaddressbook.Cheeses;
+import com.gc.materialdesign.widgets.Dialog;
+
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.CheeseDynamicAdapter;
 import com.myaddressbook.app.AppController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
@@ -35,6 +35,7 @@ public class ActGridSortSetting extends Activity {
     private int mLevel;
     private String mParentNo;
     CheeseDynamicAdapter mDynamicAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +86,7 @@ public class ActGridSortSetting extends Activity {
                 );
                 arrayAdapter.add(getResources().getString(R.string.dialog_item1));
                 arrayAdapter.add(getResources().getString(R.string.dialog_item2));
+                arrayAdapter.add(getResources().getString(R.string.dialog_item3));
                 ListView listView = new ListView(ActGridSortSetting.this);
                 float scale = getResources().getDisplayMetrics().density;
                 int dpAsPixels = (int) (8 * scale + 0.5f);
@@ -98,6 +100,9 @@ public class ActGridSortSetting extends Activity {
                             showChangeTitle(selectPosition);
                         } else if (i == 1) {
                             showChangeColor(selectPosition);
+                        } else if (i == 2) {
+                            //TODO:DELETE GROUP
+                            showDelete(selectPosition);
                         }
                         alert.dismiss();
                     }
@@ -171,6 +176,32 @@ public class ActGridSortSetting extends Activity {
             }
         });
         colorSelector.show();
+    }
+
+    private void showDelete(final AddressBook addressBook) {
+        Dialog dialog = new Dialog(ActGridSortSetting.this,
+                getResources().getString(R.string.dialog_deletegroup_title),
+                getResources().getString(R.string.dialog_deletegroup_msg),
+                getResources().getString(R.string.dialog_cancel),
+                getResources().getString(R.string.dialog_goon));
+
+        dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //TODO DELETE GROUP
+                AppController.getInstance().getDaofManger().deletedGroup(addressBook);
+                Toast.makeText(ActGridSortSetting.this, R.string.toast_reset_success, Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.setOnCancelButtonClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        dialog.show();
     }
 
     @Override

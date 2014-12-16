@@ -13,8 +13,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.widget.Toast;
 
 import com.gc.materialdesign.widgets.ColorSelector;
+import com.gc.materialdesign.widgets.Dialog;
+import com.myaddressbook.app.AppController;
 import com.myaddressbook.fragments.AboutFragment;
 import com.myaddressbook.fragments.GroupFragment;
 import com.myaddressbook.fragments.TagFragment;
@@ -137,22 +141,46 @@ public class ActHome extends Activity
             startActivity(intent);
             return true;
         }
-        if(id==R.id.action_setting_tag){
-            Intent intent=new Intent(this,ActGridTagSortSetting.class);
+        if (id == R.id.action_setting_tag) {
+            Intent intent = new Intent(this, ActGridTagSortSetting.class);
             startActivity(intent);
             return true;
         }
         if (id == R.id.search) {
             Intent intent = new Intent(this, ActSearch.class);
             startActivity(intent);
-//            ColorSelector colorSelector=new ColorSelector(this, Color.RED,new ColorSelector.OnColorSelectedListener() {
-//                @Override
-//                public void onColorSelected(int color) {
-//                    String hexColor = String.format("#%06X", (0xFFFFFF & color));
-//                    Log.d("==========",hexColor);
-//                }
-//            });
-//            colorSelector.show();
+
+            return true;
+        }
+        if (id == R.id.action_reset) {
+            Dialog dialog = new Dialog(ActHome.this,
+                    getResources().getString(R.string.dialog_reset_title),
+                    getResources().getString(R.string.dialog_reset_msg),
+                    getResources().getString(R.string.dialog_cancel),
+                    getResources().getString(R.string.dialog_goon));
+
+            dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                   //TODO RESET DB
+                    AppController.getInstance().getDaofManger().deleteAll();
+                    Fragment fragment = GroupFragment.newInstance(1);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
+                    Toast.makeText(ActHome.this,R.string.toast_reset_success,Toast.LENGTH_SHORT).show();
+                }
+            });
+            dialog.setOnCancelButtonClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            dialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
