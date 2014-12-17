@@ -35,6 +35,7 @@
     <string name="toast_error">新增失敗！已有相同群組名稱</string>
     <string name="toast_success">新增成功</string>
     <string name="toast_reset_success">重新設定完成</string>
+    <string name="toast_delete_group_success">刪除成功！</string>
     <string name="toast_insertpeople_success">新增成功!</string>
     <string name="alert_submit">確認</string>
     <string name="alert_cancal">取消</string>

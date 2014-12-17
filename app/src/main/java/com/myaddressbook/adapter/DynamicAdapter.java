@@ -23,23 +23,23 @@ import java.util.List;
  * Date: 9/7/13
  * Time: 10:56 PM
  */
-public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
+public class DynamicAdapter extends BaseDynamicGridAdapter {
     private Context mContext;
 
-    public CheeseDynamicAdapter(Context context, List<?> items, int columnCount) {
+    public DynamicAdapter(Context context, List<?> items, int columnCount) {
         super(context, items, columnCount);
         mContext = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CheeseViewHolder holder;
+        DynamicViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_grid, null);
-            holder = new CheeseViewHolder(convertView);
+            holder = new DynamicViewHolder(convertView);
             convertView.setTag(holder);
         } else {
-            holder = (CheeseViewHolder) convertView.getTag();
+            holder = (DynamicViewHolder) convertView.getTag();
         }
         AddressBook addressBook = (AddressBook) getItem(position);
         holder.build(addressBook.getPeopleName(), addressBook.getDisplayColor());
@@ -47,12 +47,12 @@ public class CheeseDynamicAdapter extends BaseDynamicGridAdapter {
         return convertView;
     }
 
-    private class CheeseViewHolder {
+    private class DynamicViewHolder {
         private TextView titleText;
         private ImageView image;
         private Drawable drawable;
 
-        private CheeseViewHolder(View view) {
+        private DynamicViewHolder(View view) {
             titleText = (TextView) view.findViewById(R.id.item_title);
             image = (ImageView) view.findViewById(R.id.item_img);
         }

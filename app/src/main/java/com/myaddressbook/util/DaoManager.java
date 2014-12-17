@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
+import de.greenrobot.dao.query.Query;
 import de.greenrobot.dao.query.QueryBuilder;
 
 /**
@@ -306,31 +307,33 @@ public class DaoManager {
     //刪除群組
     public void deletedGroup(AddressBook addressBook) {
         String peopleId = addressBook.getPeopleNo();
-        //delete self
-        QueryBuilder<AddressBook> queryfirst = getAddressBookQuery();
-        queryfirst.where(AddressBookDao.Properties.LevelNum.eq(addressBook.getLevelNum()), AddressBookDao.Properties.PeopleNo.eq(addressBook.getPeopleNo()));
-        deleteList(queryfirst.list());
+        //刪除當前的群組
+//        if (addressBook.getLevelNum() == 1) {
+            Query query = addressBookDao.queryBuilder().where(AddressBookDao.Properties.LevelNum.eq(addressBook.getLevelNum()),
+                    AddressBookDao.Properties.PeopleNo.eq(addressBook.getPeopleNo())).build();
+
+            List<AddressBook> result = query.list();
+            deleteList(result);
+//        } else {
+//
+//        }
         int level = addressBook.getLevelNum() + 1;
-        for (AddressBook n : addressBookDao.loadAll()) {
-            Log.d("db before data:", "=getPeopleNo()=" + n.getPeopleNo() + "=getLevelNum()=" + n.getLevelNum() + "=getParentNo=" + n.getParentNo()+"=getPeopleName=" + n.getPeopleName());
+        Query queryNext = addressBookDao.queryBuilder().where(AddressBookDao.Properties.LevelNum.eq(level),
+                AddressBookDao.Properties.ParentNo.eq(peopleId)).build();
 
+        List<AddressBook> next = queryNext.list();
+        Log.d("db select data:", "=level=" + level + "=peopleId()=" + peopleId + " query.list().size():" + queryNext.list().size());
+
+        for (int i = 0; i < next.size(); i++) {
+            //TODO 繼續往下刪...
+            deletedGroup(next.get(i));
         }
-        do {
-            QueryBuilder<AddressBook> query = getAddressBookQuery();
-            query.where(AddressBookDao.Properties.LevelNum.eq(level), AddressBookDao.Properties.ParentNo.eq(peopleId));
-            Log.d("db select data:", "=level=" + level + "=peopleId()=" + peopleId);
-            if (query.list().size() > 0) {
-                peopleId = query.list().get(0).getPeopleNo();
-                //TODO 繼續往下刪...
-                deleteList(query.list());
-            }
-            level++;
+        deleteList(next);
 
-        } while (level != 4);
+    }
 
-        for (AddressBook n : addressBookDao.loadAll()) {
-            Log.d("db after data:", "=getPeopleNo()=" + n.getPeopleNo() + "=getLevelNum()=" + n.getLevelNum() + "=getParentNo=" + n.getParentNo()+"=getPeopleName=" + n.getPeopleName());
+    public List<AddressBook> getAllData() {
 
-        }
+        return addressBookDao.loadAll();
     }
 }

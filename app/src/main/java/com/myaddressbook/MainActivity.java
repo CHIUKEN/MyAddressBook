@@ -10,10 +10,6 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.dynamicgrid.DynamicGridView;
-import com.myaddressbook.adapter.CheeseDynamicAdapter;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class MainActivity extends Activity {

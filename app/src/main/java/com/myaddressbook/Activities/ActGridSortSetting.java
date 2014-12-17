@@ -21,7 +21,7 @@ import com.gc.materialdesign.widgets.ColorSelector;
 import com.gc.materialdesign.widgets.Dialog;
 
 import com.myaddressbook.R;
-import com.myaddressbook.adapter.CheeseDynamicAdapter;
+import com.myaddressbook.adapter.DynamicAdapter;
 import com.myaddressbook.app.AppController;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class ActGridSortSetting extends Activity {
     private List<AddressBook> addressBookArrayList;
     private int mLevel;
     private String mParentNo;
-    CheeseDynamicAdapter mDynamicAdapter;
+    DynamicAdapter mDynamicAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ActGridSortSetting extends Activity {
         addressBookArrayList = AppController.getInstance().getDaofManger().getAddressBookList(mLevel, mParentNo);
 
         gridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
-        mDynamicAdapter = new CheeseDynamicAdapter(this,
+        mDynamicAdapter = new DynamicAdapter(this,
                 addressBookArrayList,
                 getResources().getInteger(R.integer.column_count));
         gridView.setAdapter(mDynamicAdapter);
@@ -190,8 +190,10 @@ public class ActGridSortSetting extends Activity {
             @Override
             public void onClick(View v) {
                 //TODO DELETE GROUP
+
                 AppController.getInstance().getDaofManger().deletedGroup(addressBook);
-                Toast.makeText(ActGridSortSetting.this, R.string.toast_reset_success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActGridSortSetting.this, R.string.toast_delete_group_success, Toast.LENGTH_SHORT).show();
+                mDynamicAdapter.remove(addressBook);
             }
         });
         dialog.setOnCancelButtonClickListener(new View.OnClickListener() {

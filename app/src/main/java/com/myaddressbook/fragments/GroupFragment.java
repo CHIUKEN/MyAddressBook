@@ -1,48 +1,33 @@
 package com.myaddressbook.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
-import com.dynamicgrid.DynamicGridView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
-import com.gc.materialdesign.widgets.Dialog;
 import com.myaddressbook.Activities.ActCreatePeople;
 
 import com.myaddressbook.Activities.ActHome;
 import com.myaddressbook.Activities.ActPeopleList;
 import com.myaddressbook.Activities.ActSecond;
-import com.myaddressbook.Cheeses;
 import com.myaddressbook.R;
-import com.myaddressbook.adapter.CheeseDynamicAdapter;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
-import com.myaddressbook.util.DaoManager;
-import com.myaddressbook.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
