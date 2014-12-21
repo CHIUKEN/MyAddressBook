@@ -1,42 +1,61 @@
 package com.myaddressbook.Activities;
 
-import android.app.ActionBar;
+
 import android.app.Activity;
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.view.ViewGroup.LayoutParams;
+
 
 import com.daogenerator.AddressBook;
-import com.myaddressbook.Cheeses;
+
+import com.daogenerator.Tag;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
-import com.myaddressbook.adapter.GroupAndTagAdapter;
+import com.myaddressbook.adapter.SearchGroupAdapter;
+
+import com.myaddressbook.adapter.SearchTagAdapter;
 import com.myaddressbook.app.AppController;
 
 import java.util.List;
+
+
 
 public class ActGroupChange extends Activity implements SearchView.OnQueryTextListener {
     private ListView mListview;
     private SearchView mSearchView;
     private int mLevel;
     private String mParentNO;
-    private GroupAndTagAdapter arrayAdapter;
+    private SearchGroupAdapter arrayAdapter;
     private List<AddressBook> addressBookList;
-
+    private SearchTagAdapter tagAdapter;
+    private List<Tag>tagList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_act_group_change);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(ActGroupChange.class.getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
+        setContentView(R.layout.activity_act_group_change);
+        getActionBar().setTitle(getIntent().getStringExtra("Title"));
         mLevel = getIntent().getIntExtra("Level", -1);
         mParentNO = getIntent().getStringExtra("ParentNo");
 
@@ -47,23 +66,45 @@ public class ActGroupChange extends Activity implements SearchView.OnQueryTextLi
         mListview = (ListView) findViewById(R.id.listview_group);
 
         // String[] groupArray = Cheeses.sCheeseStrings;
-        arrayAdapter = new GroupAndTagAdapter(this, addressBookList);
+        if(mLevel!=-1) {
+            arrayAdapter = new SearchGroupAdapter(this, addressBookList);
 
-        mListview.setAdapter(arrayAdapter);
+            mListview.setAdapter(arrayAdapter);
 
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO:取值，返回前頁
+            mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //TODO:取值，返回前頁
 
-                Intent result = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("AddressBook", addressBookList.get(i));
-                result.putExtras(bundle);
-                setResult(RESULT_OK, result);
-                finish();
-            }
-        });
+                    Intent result = new Intent();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putSerializable("Model", addressBookList.get(i));
+                    result.putExtras(bundle);
+                    setResult(RESULT_OK, result);
+                    finish();
+                }
+            });
+        }else{
+            tagList=AppController.getInstance().getDaofManger().getAllTag();
+            tagAdapter = new SearchTagAdapter(this, tagList);
+
+            mListview.setAdapter(tagAdapter);
+
+            mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //TODO:取值，返回前頁
+                    Intent result = new Intent();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Model", tagList.get(i));
+                    result.putExtras(bundle);
+                    setResult(RESULT_OK, result);
+                    finish();
+                }
+            });
+        }
     }
 
 

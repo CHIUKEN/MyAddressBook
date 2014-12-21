@@ -9,15 +9,17 @@
     <string name="title_activity_act_three">ActThree</string>
     <string name="title_activity_act_people_list">ActPeopleList</string>
     <string name="title_activity_act_grid_sort_setting">設定排序</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">設定</string>
-    <string name="action_setting_group">群組設定</string>
-    <string name="action_setting_tag">標籤設定</string>
-    <string name="action_reset">重新設定</string>
-    <string name="action_submit">確認</string>
-    <string name="action_all">全選</string>
-
+    <string name="title_activity_act_tag_people_list">標籤名單列表</string>
+    <string name="title_activity_act_create_people_tag">ActCreatePeopleTag</string>
+    <string name="title_activity_act_grid_tag_sort_setting">ActGridTagSortSetting</string>
     <string name="title_activity_act_home">群組分類</string>
+    <string name="title_activity_act_search">快速查詢</string>
+    <string name="title_activity_act_change_group">更改群組</string>
+    <string name="title_activity_act_change_tag">更改標籤</string>
+    <string name="title_activity_act_group_change"></string>
+    <string name="hello_world">Hello world!</string>
+
+
     <string name="title_section1">依群組</string>
     <string name="title_section2">依標籤</string>
     <string name="title_section3">關於我</string>
@@ -44,6 +46,7 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="no_data">尚未加入名單</string>
+    <string name="create_no_data">未加入名單空空如也!!</string>
     <string name="btn_callphone">打電話</string>
     <string name="title_activity_act_people_detail">詳細資料</string>
     <!-- dialog -->
@@ -60,6 +63,7 @@
     <string name="dialog_reset_msg">請問是否重新設定整個通訊錄？</string>
     <string name="dialog_deletegroup_title">確認刪除</string>
     <string name="dialog_deletegroup_msg">請問是否確認刪除此群組？</string>
+    <string name="dialog_loading_text">請稍候</string>
     <!-- 詳細資料 -->
     <string name="title_detail_name">姓名:</string>
     <string name="title_detail_phone">電話:</string>
@@ -69,19 +73,24 @@
     <string name="title_detail_tag1">標籤一:</string>
     <string name="title_detail_tag2">標籤二:</string>
     <string name="title_detail_def">未選擇</string>
-    <string name="title_activity_act_group_change">ActGroupChange</string>
+
     <string name="title_search_hint">請輸入關鍵字查詢</string>
     <!-- menu title -->
     <string name="menu_submit">確認</string>
     <string name="menu_edit">編輯</string>
     <string name="menu_cancel">取消</string>
-    <string name="title_activity_act_search">快速查詢</string>
+
     <string name="title_activity_test2">Test2Activity</string>
+    <string name="action_settings">設定</string>
+    <string name="action_setting_group">群組設定</string>
+    <string name="action_setting_tag">標籤設定</string>
+    <string name="action_reset">重新設定</string>
+    <string name="action_submit">確認</string>
+    <string name="action_all">全選</string>
+
     <!-- TIP -->
     <string name="tip_item1">※長按可更改排序！</string>
     <string name="tip_item2">※點一下可更改名稱、顏色跟刪除！</string>
-    <string name="title_activity_act_tag_people_list">ActTagPeopleList</string>
-    <string name="title_activity_act_create_people_tag">ActCreatePeopleTag</string>
-    <string name="title_activity_act_grid_tag_sort_setting">ActGridTagSortSetting</string>
+
 
 </resources>

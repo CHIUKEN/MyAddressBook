@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.myaddressbook.Activities.ActCreatePeople">
-
-    <item
-        android:id="@+id/action_ok"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="@string/action_submit" />
     <item
         android:id="@+id/action_all"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/action_all" />
+    <item
+        android:id="@+id/action_ok"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/action_submit" />
+
 </menu>

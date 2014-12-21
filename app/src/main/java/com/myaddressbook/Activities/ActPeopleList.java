@@ -16,12 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.Dialog;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.PeopleListAdapter;
 import com.myaddressbook.app.AppController;
@@ -47,6 +52,16 @@ public class ActPeopleList extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
         setContentView(R.layout.activity_act_people_list);
         mLevel = getIntent().getIntExtra("Level", -1);
         mParentNo = getIntent().getStringExtra("ParentNo");
@@ -69,7 +84,10 @@ public class ActPeopleList extends Activity {
         addressBookList = new ArrayList<AddressBook>();// AppController.getInstance().getDaofManger().getAddressBookList(4, mParentNo);
         mPeopleListAdapter = new PeopleListAdapter(this, addressBookList);
         mlistView.setAdapter(mPeopleListAdapter);
-
+        //QuickReturn button
+        int footerHeight = getResources().getDimensionPixelSize(R.dimen.flatButton_bottom);
+        footerHeight += getResources().getDimensionPixelSize(R.dimen.flatButton_height);
+        mlistView.setOnScrollListener(new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, btn_newpeople, footerHeight));
 
         //明細頁
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,19 +1,28 @@
 package com.myaddressbook.Activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.daogenerator.Tag;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.app.AppController;
 
@@ -50,10 +59,25 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
     private static final int RESULT_TAG1 = 4;
     private static final int RESULT_TAG2 = 5;
     private boolean isHasNext = false;
+    private ImageView img_next_group1;
+    private ImageView img_next_group2;
+    private ImageView img_next_group3;
+    private ImageView img_next_tag1;
+    private ImageView img_next_tag2;
+    private LinearLayout layoutPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
         setContentView(R.layout.activity_act_people_detail);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,6 +101,12 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         layout_detail_group3 = (LinearLayout) findViewById(R.id.layout_detail_group3);
         line4 = (View) findViewById(R.id.line4);
         line5 = (View) findViewById(R.id.line5);
+        img_next_group1 = (ImageView) findViewById(R.id.img_next_group1);
+        img_next_group2 = (ImageView) findViewById(R.id.img_next_group2);
+        img_next_group3 = (ImageView) findViewById(R.id.img_next_group3);
+        img_next_tag1 = (ImageView) findViewById(R.id.img_next_tag1);
+        img_next_tag2 = (ImageView) findViewById(R.id.img_next_tag2);
+        layoutPhone = (LinearLayout) findViewById(R.id.layout_call);
 
         txt_detail_name.setText(mAddressbook.getPeopleName());
         txt_detail_phone.setText(mAddressbook.getPeoplePhone());
@@ -85,6 +115,7 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         editText_name.setSelection(editText_name.length());
         editText_phone.setSelection(editText_phone.length());
 
+        layoutPhone.setOnClickListener(this);
         if (mLevel == 1) {
             AddressBook newAdd = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
             if (newAdd == null)
@@ -133,25 +164,48 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
     }
 
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (IsEdit) {
 
             menu.findItem(R.id.action_edit).setVisible(false);
             menu.findItem(R.id.action_submit).setVisible(true);
+            layout_detail_group1.setBackground(getResources().getDrawable(R.drawable.style_list_click));
+            layout_detail_group2.setBackground(getResources().getDrawable(R.drawable.style_list_click));
+            layout_detail_group3.setBackground(getResources().getDrawable(R.drawable.style_list_click));
+            layout_detail_tag1.setBackground(getResources().getDrawable(R.drawable.style_list_click));
+            layout_detail_tag2.setBackground(getResources().getDrawable(R.drawable.style_list_click));
+            img_next_group1.setVisibility(View.VISIBLE);
+            img_next_group2.setVisibility(View.VISIBLE);
+            img_next_group3.setVisibility(View.VISIBLE);
+            img_next_tag1.setVisibility(View.VISIBLE);
+            img_next_tag2.setVisibility(View.VISIBLE);
             layout_detail_group1.setOnClickListener(this);
             layout_detail_group2.setOnClickListener(this);
             layout_detail_group3.setOnClickListener(this);
             layout_detail_tag1.setOnClickListener(this);
             layout_detail_tag2.setOnClickListener(this);
+            layoutPhone.setVisibility(View.GONE);
         } else {
             menu.findItem(R.id.action_cancel).setVisible(false);
             menu.findItem(R.id.action_submit).setVisible(false);
+            img_next_group1.setVisibility(View.GONE);
+            img_next_group2.setVisibility(View.GONE);
+            img_next_group3.setVisibility(View.GONE);
+            img_next_tag1.setVisibility(View.GONE);
+            img_next_tag2.setVisibility(View.GONE);
+            layout_detail_group1.setBackground(null);
+            layout_detail_group2.setBackground(null);
+            layout_detail_group3.setBackground(null);
+            layout_detail_tag1.setBackground(null);
+            layout_detail_tag2.setBackground(null);
             layout_detail_group1.setOnClickListener(null);
             layout_detail_group2.setOnClickListener(null);
             layout_detail_group3.setOnClickListener(null);
             layout_detail_tag1.setOnClickListener(null);
             layout_detail_tag2.setOnClickListener(null);
+            layoutPhone.setVisibility(View.VISIBLE);
         }
         return true;
     }
@@ -218,25 +272,35 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.layout_detail_tag1:
                 result = RESULT_TAG1;
+                intent.putExtra("Title", getResources().getString(R.string.title_activity_act_change_tag));
                 break;
             case R.id.layout_detail_tag2:
                 result = RESULT_TAG2;
+                intent.putExtra("Title", getResources().getString(R.string.title_activity_act_change_tag));
                 break;
             case R.id.layout_detail_group1:
                 result = RESULT_GROUP1;
                 bundle.putInt("Level", 1);
                 intent.putExtra("ParentNo", "");
+                intent.putExtra("Title", getResources().getString(R.string.title_activity_act_change_group));
                 break;
             case R.id.layout_detail_group2:
                 result = RESULT_GROUP2;
                 bundle.putInt("Level", 2);
                 intent.putExtra("ParentNo", groupParent2);
+                intent.putExtra("Title", getResources().getString(R.string.title_activity_act_change_group));
                 break;
             case R.id.layout_detail_group3:
                 result = RESULT_GROUP3;
                 bundle.putInt("Level", 3);
                 intent.putExtra("ParentNo", groupParent3);
+                intent.putExtra("Title", getResources().getString(R.string.title_activity_act_change_group));
                 break;
+            case R.id.layout_call:
+                Intent tel = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + editText_phone.getText()));
+                Log.i("phonenumber", editText_phone.getText().toString());
+                startActivity(tel);
+                return;
         }
         intent.putExtras(bundle);
 
@@ -249,9 +313,11 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         if (resultCode != RESULT_OK) {
             return;
         }
-        AddressBook addressBook = (AddressBook) data.getSerializableExtra("AddressBook");
+        AddressBook addressBook;
+        Tag tag;
         switch (requestCode) {
             case RESULT_GROUP1:
+                addressBook = (AddressBook) data.getSerializableExtra("Model");
                 txt_detail_group1.setText(addressBook.getPeopleName());
                 if (checkHasNext(2, addressBook.getPeopleNo())) {
                     groupParent2 = addressBook.getPeopleNo();
@@ -270,6 +336,7 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
                 }
                 break;
             case RESULT_GROUP2:
+                addressBook = (AddressBook) data.getSerializableExtra("Model");
                 txt_detail_group2.setText(addressBook.getPeopleName());
                 if (checkHasNext(3, addressBook.getPeopleNo())) {
                     groupParent3 = addressBook.getPeopleNo();
@@ -284,13 +351,23 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
                 }
                 break;
             case RESULT_GROUP3:
+                addressBook = (AddressBook) data.getSerializableExtra("Model");
                 txt_detail_group3.setText(addressBook.getPeopleName());
                 mAddressbook.setParentNo(addressBook.getPeopleNo());
                 isHasNext = false;
                 break;
             case RESULT_TAG1:
+                tag = (Tag) data.getSerializableExtra("Model");
+                txt_detail_tag1.setText(tag.getTagName());
+                mAddressbook.setTag1Name(tag.getTagName());
+                mAddressbook.setTagId1(String.valueOf(tag.getId()));
                 break;
             case RESULT_TAG2:
+                tag = (Tag) data.getSerializableExtra("Model");
+                txt_detail_tag2.setText(tag.getTagName());
+                mAddressbook.setTag2Name(tag.getTagName());
+                mAddressbook.setTagId2(String.valueOf(tag.getId()));
+
                 break;
 
         }

@@ -32,6 +32,8 @@ dependencies {
     compile project(':QucikReturnlibrary')
     compile 'se.emilsjolander:stickylistheaders:2.1.5'
     compile 'me.drakeet.materialdialog:library:1.2.2'
+    compile 'com.google.android.gms:play-services:6.5.+'
+    compile files('libs/libGoogleAnalyticsServices.jar')
     compile 'com.android.support:support-v4:21.0.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
         transitive = true;

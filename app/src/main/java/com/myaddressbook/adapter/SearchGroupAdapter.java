@@ -8,19 +8,25 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.daogenerator.AddressBook;
+
 import com.myaddressbook.R;
 
+import java.lang.reflect.Type;
 import java.util.List;
+
+
 
 /**
  * Created by K on 2014/12/13.
  */
-public class GroupAndTagAdapter extends BaseAdapter {
+public class SearchGroupAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<AddressBook> addressBookList;
 
-    public GroupAndTagAdapter(Activity activity, List<AddressBook> addressBookList) {
+
+    public SearchGroupAdapter(Activity activity, List<AddressBook> addressBookList) {
         this.addressBookList = addressBookList;
+
         inflater = LayoutInflater.from(activity);
     }
 
@@ -41,7 +47,9 @@ public class GroupAndTagAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+
         GroupAndTagViewHolder viewHolder;
+
         if (view == null) {
             view = inflater.inflate(R.layout.item_search, viewGroup, false);
             viewHolder = new GroupAndTagViewHolder(view);
@@ -49,7 +57,10 @@ public class GroupAndTagAdapter extends BaseAdapter {
         } else {
             viewHolder = (GroupAndTagViewHolder) view.getTag();
         }
+
         viewHolder.build(addressBookList.get(i).getPeopleName());
+
+
         return view;
     }
 

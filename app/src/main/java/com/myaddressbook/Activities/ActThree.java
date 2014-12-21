@@ -17,6 +17,9 @@ import android.widget.Toast;
 import com.daogenerator.AddressBook;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.GroupAdapter;
 import com.myaddressbook.app.AppController;
@@ -39,6 +42,16 @@ public class ActThree extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
         setContentView(R.layout.activity_act_three);
         gridView = (GridView) findViewById(R.id.gridview);
         btn_three_group = (ButtonRectangle) findViewById(R.id.btn_three_group);

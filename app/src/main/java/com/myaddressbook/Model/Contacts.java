@@ -26,6 +26,10 @@ public class Contacts {
     }
 
     public String getContactsEmail() {
+        if (contactsEmail == null && emails.size() > 0) {
+            if (emails.get(0) != null)
+                contactsEmail = emails.get(0).address;
+        }
         return contactsEmail;
     }
 
@@ -42,6 +46,10 @@ public class Contacts {
     }
 
     public String getContactsPhone() {
+        if (contactsPhone == null && numbers.size() > 0) {
+            if (numbers.get(0) != null)
+                contactsPhone = numbers.get(0).number;
+        }
         return contactsPhone;
     }
 

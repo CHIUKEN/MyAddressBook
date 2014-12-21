@@ -11,23 +11,43 @@ import android.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.daogenerator.AddressBook;
 
+
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.app.AppController;
 import com.myaddressbook.util.DaoManager;
 import com.myaddressbook.util.PrefManager;
 
 import java.util.Date;
-import java.util.List;
+
 
 import io.fabric.sdk.android.Fabric;
 
 
 public class ActLanch extends Activity {
     private PrefManager pref;
+    private static final String SCREEN_LABEL = ActLanch.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        // Get tracker.
+//        Tracker t = ((AppController) this.getApplication()).getTracker(
+//                AppController.TrackerName.APP_TRACKER);
+//        // Set screen name.
+//        // Where path is a String representing the screen name.
+//        t.setScreenName(SCREEN_LABEL);
+//
+//        // Send a screen view.
+//        t.send(new HitBuilders.AppViewBuilder().build());
+//        GoogleAnalytics.getInstance(this).reportActivityStart(this);
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.activity_act_lanch);
         getActionBar().hide();
         pref = new PrefManager(getApplicationContext());

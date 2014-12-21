@@ -1,38 +1,49 @@
 package com.myaddressbook.Activities;
 
 import android.app.Activity;
-import android.app.LoaderManager;
+
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.res.Resources;
+
 import android.database.Cursor;
 import android.net.Uri;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.provider.ContactsContract;
-import android.util.Log;
+
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
+
+import android.view.View;
 import android.widget.ListView;
 
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.Model.Contacts;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.ContactsAdapter;
-import com.myaddressbook.adapter.NewPeopleAdapter;
+
 import com.myaddressbook.app.AppController;
 import com.myaddressbook.util.DaoManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.provider.ContactsContract.*;
+
+import me.drakeet.materialdialog.MaterialDialog;
+
 import static android.provider.ContactsContract.CommonDataKinds.*;
 
 
@@ -49,27 +60,112 @@ public class ActCreatePeople extends Activity {
     private String mParentName;
     private ArrayList<Contacts> listContacts;
     private ContactsAdapter contactsAdapter;
+    private ProgressBarCircularIndeterminate progress;
+    private MaterialDialog mMaterialDialog;
+    private TextView txt_no_data;
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {//此方法在ui线程运行
+            switch (msg.what) {
+                case 1:
+                    contactsAdapter.notifyDataSetChanged();
+                    progress.setVisibility(View.GONE);
+                    if (listContacts.size() == 0) {
+                        txt_no_data.setVisibility(View.VISIBLE);
+                    } else {
+                        txt_no_data.setVisibility(View.GONE);
+                    }
+                    break;
+
+            }
+        }
+    };
+
+    private HandlerThread mThread;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(ActCreatePeople.class.getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_act_create_people);
+
+//            ContentValues values = new ContentValues();
+//
+//            Uri rawContactUri =
+//                    getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, values);
+//            long rawContactId = ContentUris.parseId(rawContactUri);
+//
+//            values.clear();
+//            values.put(ContactsContract.RawContacts.Data.RAW_CONTACT_ID, rawContactId);
+//            values.put(ContactsContract.RawContacts.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE);
+//            values.put(StructuredName.GIVEN_NAME, "AFadfafdSEQ"+i);
+//            getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+//
+//            values.clear();
+//            values.put(ContactsContract.RawContacts.Data.RAW_CONTACT_ID, rawContactId);
+//            values.put(ContactsContract.RawContacts.Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE);
+//            values.put(Phone.TYPE, Phone.TYPE_MOBILE);
+//            values.put(Phone.NUMBER, "0945123654");
+//            getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+        mMaterialDialog = new MaterialDialog(this);
+        txt_no_data = (TextView) findViewById(R.id.txt_createpeople_tiptext);
         mlistView = (ListView) findViewById(R.id.listView_new);
+        progress = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndetermininate);
+
         mContactsList = new ArrayList<Contacts>();
 
         mlevel = getIntent().getIntExtra("Level", -1);
         mParentNo = getIntent().getStringExtra("ParentNo");
         mParentName = getIntent().getStringExtra("ParentName");
 
+        mThread = new HandlerThread("Create");
+        mThread.start();
 
-        listContacts = fetchAll();
+        Handler mThreadHandler = new Handler(mThread.getLooper());
+        mThreadHandler.post(runnable);
+
+        listContacts = new ArrayList<Contacts>();
 
         contactsAdapter = new ContactsAdapter(this, listContacts);
         mlistView.setAdapter(contactsAdapter);
         contactsAdapter.notifyDataSetChanged();
 
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            ArrayList<Contacts> arrayList = fetchAll();
+            for (int i = 0; i < arrayList.size(); i++) {
+                boolean isExist = AppController.getInstance().getDaofManger().queryIsExist(arrayList.get(i).getContactsName());
+                if (!isExist) {
+                    listContacts.add(arrayList.get(i));
+                }
+            }
+            mHandler.obtainMessage(1).sendToTarget();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        //将线程与当前handler解除
+        mHandler.removeCallbacks(runnable);
+        if (mMaterialDialog != null) {
+            mMaterialDialog.dismiss();
+        }
+        super.onDestroy();
     }
 
     public void fetchContactNumbers(Cursor cursor, Contacts contact) {
@@ -205,10 +301,14 @@ public class ActCreatePeople extends Activity {
         }
         //確認
         if (id == R.id.action_ok) {
+            View view = LayoutInflater.from(this).inflate(R.layout.progressbar_item, null);
+            mMaterialDialog.setView(view).show();
             //TODO:Insert to db
             mContactsList = contactsAdapter.getSelectedItems();
-            DaoManager daoManager = AppController.getInstance().getDaofManger();
-            daoManager.InsertPeopleList(mParentNo, mParentName, mContactsList);
+            if (mContactsList.size() > 0) {
+                DaoManager daoManager = AppController.getInstance().getDaofManger();
+                daoManager.InsertPeopleList(mParentNo, mParentName, mContactsList);
+            }
             setResult(RESULT_OK);
             finish();
             //清空

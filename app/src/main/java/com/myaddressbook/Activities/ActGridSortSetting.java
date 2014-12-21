@@ -20,6 +20,9 @@ import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.ColorSelector;
 import com.gc.materialdesign.widgets.Dialog;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.DynamicAdapter;
 import com.myaddressbook.app.AppController;
@@ -39,7 +42,15 @@ public class ActGridSortSetting extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+    // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(ActGridSortSetting.class.getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
         setContentView(R.layout.activity_act_grid_sort_setting);
         mLevel = getIntent().getIntExtra("Level", -1);
         mParentNo = getIntent().getStringExtra("ParentNo");

@@ -3,24 +3,41 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="48dp"
+    android:gravity="center">
 
-    <ProgressBar
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="9dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:indeterminate="true"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <AutoCompleteTextView
-        android:layout_width="match_parent"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/dialog_loading_text"
+        android:id="@+id/textView10"
+        android:layout_marginBottom="3dp"
+        android:textColor="#357EC7" />
+
+    <com.gc.materialdesign.views.ProgressBarIndeterminate
+        android:id="@+id/progressBarIndeterminate"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="AutoCompleteTextView"
-        />
+
+        android:background="#1E88E5" />
+
+    <!--<ProgressBar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="9dp"-->
+        <!--android:layout_marginTop="24dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:indeterminate="true"-->
+        <!--/>-->
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+    <!--<AutoCompleteTextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="AutoCompleteTextView"-->
+        <!--/>-->
 
 </LinearLayout>

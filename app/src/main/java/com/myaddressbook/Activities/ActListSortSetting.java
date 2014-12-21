@@ -13,6 +13,9 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.daogenerator.AddressBook;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.myaddressbook.R;
@@ -45,6 +48,16 @@ public class ActListSortSetting extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
         setContentView(R.layout.activity_act_list_sort_setting);
         mDslv = (DragSortListView) findViewById(android.R.id.list);
         mController = buildController(mDslv);
@@ -91,7 +104,7 @@ public class ActListSortSetting extends Activity {
                 public void remove(int which) {
                     AddressBook delet = addressBookList.get(which);
                     deleteList.add(delet);
-                    addressBookList.remove(which);
+
 //                    adapter.remove(adapter.getItem(which));
                 }
             };

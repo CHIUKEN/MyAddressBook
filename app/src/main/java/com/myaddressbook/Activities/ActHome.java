@@ -43,6 +43,7 @@ public class ActHome extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_act_home);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)

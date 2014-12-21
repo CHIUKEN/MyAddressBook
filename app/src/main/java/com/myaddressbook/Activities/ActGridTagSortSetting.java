@@ -19,6 +19,9 @@ import com.dynamicgrid.DynamicGridView;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
 import com.gc.materialdesign.widgets.ColorSelector;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 
 import com.myaddressbook.adapter.TagAdapter;
@@ -39,6 +42,16 @@ public class ActGridTagSortSetting extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(ActGridTagSortSetting.class.getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
         setContentView(R.layout.activity_act_grid_tag_sort_setting);
         mGridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
 

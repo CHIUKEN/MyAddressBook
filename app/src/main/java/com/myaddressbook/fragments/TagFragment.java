@@ -16,6 +16,9 @@ import com.daogenerator.Tag;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.MaterialEditText;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.Activities.ActHome;
 import com.myaddressbook.Activities.ActTagPeopleList;
 import com.myaddressbook.R;
@@ -54,9 +57,15 @@ public class TagFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
+        // Get tracker.
+        Tracker t = ((AppController) getActivity().getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(TagFragment.class.getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(getActivity()).reportActivityStart(getActivity());
     }
 
     @Override

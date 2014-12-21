@@ -12,13 +12,19 @@
     <color name="layout_down">#bfbfbf</color>
     <color name="layout_selector">#cccccc</color>
 
+    <color name="loading_color">#357EC7</color>
     <color name="primary">#3f51b5</color>
     <color name="primary_pressed">#303f9f</color>
     <color name="ripple">#ff80ab</color>
     <color name="accent">#ff4081</color>
     <color name="accent_pressed">#f50057</color>
 
-    <color name="header_normal">#ffe74c3c</color>
-    <color name="header_pressed">#ffc0392b</color>
+    <color name="header_normal">#FBF9D0</color>
+    <color name="header_pressed">#F9F7BA</color>
     <color name="menu_section_header">#FFDDDDDD</color>
+
+    <color name="phone_normal">#ffe74c3c</color>
+    <color name="phone_pressed">#ffc0392b</color>
+    <color name="bg_color">#CCCCCC</color>
+    <color name="bg_colorW">#FCFCFC</color>
 </resources>

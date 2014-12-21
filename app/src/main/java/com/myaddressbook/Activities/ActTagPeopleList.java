@@ -13,6 +13,9 @@ import com.daogenerator.AddressBook;
 import com.daogenerator.Tag;
 import com.gc.materialdesign.views.Button;
 import com.gc.materialdesign.views.ButtonFloat;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.myaddressbook.R;
 import com.myaddressbook.adapter.PeopleListAdapter;
 import com.myaddressbook.app.AppController;
@@ -30,6 +33,16 @@ public class ActTagPeopleList extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get tracker.
+        Tracker t = ((AppController) this.getApplication()).getTracker(
+                AppController.TrackerName.APP_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(this.getClass().getSimpleName());
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
         setContentView(R.layout.activity_act_tag_people_list);
         mListview = (ListView) findViewById(R.id.listView_people);
         mBtn_newpeople = (ButtonFloat) findViewById(R.id.btn_newpeople);
@@ -40,7 +53,8 @@ public class ActTagPeopleList extends Activity {
         addressBookList = new ArrayList<AddressBook>();
         mPeopleListAdapter = new PeopleListAdapter(this, addressBookList);
         mListview.setAdapter(mPeopleListAdapter);
-
+        //此功能暫使不做
+        mBtn_newpeople.setVisibility(View.GONE);
         mBtn_newpeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
