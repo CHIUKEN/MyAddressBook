@@ -91,6 +91,6 @@
     <!-- TIP -->
     <string name="tip_item1">※長按可更改排序！</string>
     <string name="tip_item2">※點一下可更改名稱、顏色跟刪除！</string>
-
-
+    <string name="tip_no_data">查無資料</string>
+    <string name="tip_no_addtag">尚未新增標籤</string>
 </resources>

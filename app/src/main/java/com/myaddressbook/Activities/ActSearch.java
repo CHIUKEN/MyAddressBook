@@ -43,6 +43,8 @@ public class ActSearch extends Activity implements SearchView.OnQueryTextListene
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
         setContentView(R.layout.activity_act_search);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
         mListview = (StickyListHeadersListView) findViewById(R.id.lv_search);
         addressBookList = AppController.getInstance().getDaofManger().getall();
         searchAdapter = new SearchAdapter(this, addressBookList);
@@ -86,6 +88,9 @@ public class ActSearch extends Activity implements SearchView.OnQueryTextListene
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id==android.R.id.home){
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

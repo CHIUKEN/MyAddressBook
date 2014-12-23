@@ -162,9 +162,7 @@ public class ActCreatePeople extends Activity {
     protected void onDestroy() {
         //将线程与当前handler解除
         mHandler.removeCallbacks(runnable);
-        if (mMaterialDialog != null) {
-            mMaterialDialog.dismiss();
-        }
+
         super.onDestroy();
     }
 

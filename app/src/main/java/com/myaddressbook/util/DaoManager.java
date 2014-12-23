@@ -196,7 +196,7 @@ public class DaoManager {
 
     //取得tagid的集合
     public List<AddressBook> getAddressBookByTag(String tagid) {
-        List<AddressBook>addressBooks=new ArrayList<AddressBook>();
+        List<AddressBook> addressBooks = new ArrayList<AddressBook>();
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         //Query q= query.where(AddressBookDao.Properties.LevelNum.eq(4)).build();
         //query.or(AddressBookDao.Properties.TagId1.eq(tagid),
@@ -235,7 +235,7 @@ public class DaoManager {
 
     public boolean queryIsExist(String name) {
         QueryBuilder<AddressBook> query = addressBookDao.queryBuilder();
-         query.where(AddressBookDao.Properties.LevelNum.eq(4), AddressBookDao.Properties.PeopleName.eq(name));
+        query.where(AddressBookDao.Properties.LevelNum.eq(4), AddressBookDao.Properties.PeopleName.eq(name));
         query.buildCount().count();
         return query.buildCount().count() > 0 ? true : false;
     }
@@ -278,6 +278,13 @@ public class DaoManager {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         query.where(AddressBookDao.Properties.LevelNum.eq(Level), AddressBookDao.Properties.ParentNo.eq(parentNo),
                 AddressBookDao.Properties.PeopleName.like(strQuery)).orderAsc(AddressBookDao.Properties.Sort);
+        return query.list();
+    }
+
+    //篩選標籤
+    public List<Tag> filerTag(String str) {
+        QueryBuilder<Tag> query = tagDao.queryBuilder();
+        query.where(TagDao.Properties.TagName.eq(str));
         return query.list();
     }
 
@@ -341,11 +348,12 @@ public class DaoManager {
 
     }
 
-    public int getParentNoLevel(String ParentNo){
+    public int getParentNoLevel(String ParentNo) {
         QueryBuilder<AddressBook> query = getAddressBookQuery();
         query.where(AddressBookDao.Properties.PeopleNo.eq(ParentNo)).build();
         return query.list().get(0).getLevelNum();
     }
+
     public List<AddressBook> getAllData() {
 
         return addressBookDao.loadAll();

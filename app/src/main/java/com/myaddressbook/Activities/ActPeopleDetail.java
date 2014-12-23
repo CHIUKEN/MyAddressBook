@@ -32,6 +32,7 @@ import java.util.List;
 
 public class ActPeopleDetail extends Activity implements View.OnClickListener {
     private AddressBook mAddressbook;
+
     private int mLevel;
     private TextView txt_detail_name;
     private TextView txt_detail_phone;
@@ -85,6 +86,7 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         mLevel = getIntent().getIntExtra("Level", -1);
         mAddressbook = (AddressBook) getIntent().getSerializableExtra("AddressBook");
 
+
         txt_detail_name = (TextView) findViewById(R.id.txt_detail_name);
         txt_detail_phone = (TextView) findViewById(R.id.txt_detail_phone);
         txt_detail_group1 = (TextView) findViewById(R.id.txt_detail_group1);
@@ -116,43 +118,45 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         editText_phone.setSelection(editText_phone.length());
 
         layoutPhone.setOnClickListener(this);
-        if (mLevel == 1) {
-            AddressBook newAdd = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
-            if (newAdd == null)
-                return;
-            txt_detail_group1.setText(newAdd.getPeopleName());
-            groupParent1 = "";
-            layout_detail_group2.setVisibility(View.GONE);
-            layout_detail_group3.setVisibility(View.GONE);
-            txt_detail_group2.setVisibility(View.GONE);
-            txt_detail_group3.setVisibility(View.GONE);
-            line4.setVisibility(View.GONE);
-            line5.setVisibility(View.GONE);
-        } else if (mLevel == 2) {
-            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
-            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
-            if (group1 == null || group2 == null)
-                return;
-            txt_detail_group1.setText(group1.getPeopleName());
-            txt_detail_group2.setText(group2.getPeopleName());
-            groupParent1 = "";
-            groupParent2 = group1.getPeopleNo();
-            layout_detail_group3.setVisibility(View.GONE);
-            txt_detail_group3.setVisibility(View.GONE);
-            line5.setVisibility(View.GONE);
-        } else if (mLevel == 3) {
-            AddressBook group3 = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
-            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group3.getParentNo());
-            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
-            if (group1 == null || group2 == null || group3 == null)
-                return;
-            groupParent1 = "";
-            groupParent2 = group1.getPeopleNo();
-            groupParent3 = group2.getPeopleNo();
-            txt_detail_group1.setText(group1.getPeopleName());
-            txt_detail_group2.setText(group2.getPeopleName());
-            txt_detail_group3.setText(group3.getPeopleName());
-        }
+
+        initView(mAddressbook);
+//        if (mLevel == 1) {
+//            AddressBook newAdd = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
+//            if (newAdd == null)
+//                return;
+//            txt_detail_group1.setText(newAdd.getPeopleName());
+//            groupParent1 = "";
+//            layout_detail_group2.setVisibility(View.GONE);
+//            layout_detail_group3.setVisibility(View.GONE);
+//            txt_detail_group2.setVisibility(View.GONE);
+//            txt_detail_group3.setVisibility(View.GONE);
+//            line4.setVisibility(View.GONE);
+//            line5.setVisibility(View.GONE);
+//        } else if (mLevel == 2) {
+//            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
+//            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
+//            if (group1 == null || group2 == null)
+//                return;
+//            txt_detail_group1.setText(group1.getPeopleName());
+//            txt_detail_group2.setText(group2.getPeopleName());
+//            groupParent1 = "";
+//            groupParent2 = group1.getPeopleNo();
+//            layout_detail_group3.setVisibility(View.GONE);
+//            txt_detail_group3.setVisibility(View.GONE);
+//            line5.setVisibility(View.GONE);
+//        } else if (mLevel == 3) {
+//            AddressBook group3 = AppController.getInstance().getDaofManger().getParentNameByParentNo(mAddressbook.getParentNo());
+//            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group3.getParentNo());
+//            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
+//            if (group1 == null || group2 == null || group3 == null)
+//                return;
+//            groupParent1 = "";
+//            groupParent2 = group1.getPeopleNo();
+//            groupParent3 = group2.getPeopleNo();
+//            txt_detail_group1.setText(group1.getPeopleName());
+//            txt_detail_group2.setText(group2.getPeopleName());
+//            txt_detail_group3.setText(group3.getPeopleName());
+//        }
 
         if (!mAddressbook.getTag1Name().equals("")) {
             txt_detail_tag1.setText(mAddressbook.getTag1Name());
@@ -237,7 +241,9 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
             txt_detail_name.setVisibility(View.VISIBLE);
             txt_detail_phone.setVisibility(View.VISIBLE);
             IsEdit = false;
+            //重新取得原本的model
             invalidateOptionsMenu();
+            finish();
         }
         if (id == R.id.action_submit) {
             if (isHasNext) {
@@ -262,6 +268,47 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initView(AddressBook model) {
+        if (mLevel == 1) {
+            AddressBook parentBook = AppController.getInstance().getDaofManger().getParentNameByParentNo(model.getParentNo());
+            if (model == null)
+                return;
+            txt_detail_group1.setText(parentBook.getPeopleName());
+            groupParent1 = "";
+            layout_detail_group2.setVisibility(View.GONE);
+            layout_detail_group3.setVisibility(View.GONE);
+            txt_detail_group2.setVisibility(View.GONE);
+            txt_detail_group3.setVisibility(View.GONE);
+            line4.setVisibility(View.GONE);
+            line5.setVisibility(View.GONE);
+        } else if (mLevel == 2) {
+            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(model.getParentNo());
+            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
+            if (group1 == null || group2 == null)
+                return;
+            txt_detail_group1.setText(group1.getPeopleName());
+            txt_detail_group2.setText(group2.getPeopleName());
+            groupParent1 = "";
+            groupParent2 = group1.getPeopleNo();
+            layout_detail_group3.setVisibility(View.GONE);
+            txt_detail_group3.setVisibility(View.GONE);
+            line5.setVisibility(View.GONE);
+        } else if (mLevel == 3) {
+            AddressBook group3 = AppController.getInstance().getDaofManger().getParentNameByParentNo(model.getParentNo());
+            AddressBook group2 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group3.getParentNo());
+            AddressBook group1 = AppController.getInstance().getDaofManger().getParentNameByParentNo(group2.getParentNo());
+            if (group1 == null || group2 == null || group3 == null)
+                return;
+            groupParent1 = "";
+            groupParent2 = group1.getPeopleNo();
+            groupParent3 = group2.getPeopleNo();
+            txt_detail_group1.setText(group1.getPeopleName());
+            txt_detail_group2.setText(group2.getPeopleName());
+            txt_detail_group3.setText(group3.getPeopleName());
+        }
+
     }
 
     @Override
@@ -322,7 +369,9 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
                 if (checkHasNext(2, addressBook.getPeopleNo())) {
                     groupParent2 = addressBook.getPeopleNo();
                     txt_detail_group2.setText("請選擇");
+                    txt_detail_group2.setVisibility(View.VISIBLE);
                     layout_detail_group2.setVisibility(View.VISIBLE);
+                    line4.setVisibility(View.VISIBLE);
                     txt_detail_group3.setText("請選擇");
                     layout_detail_group3.setVisibility(View.GONE);
                     isHasNext = true;
@@ -342,6 +391,8 @@ public class ActPeopleDetail extends Activity implements View.OnClickListener {
                     groupParent3 = addressBook.getPeopleNo();
                     layout_detail_group3.setVisibility(View.VISIBLE);
                     txt_detail_group3.setText("請選擇");
+                    txt_detail_group3.setVisibility(View.VISIBLE);
+                    line5.setVisibility(View.VISIBLE);
                     isHasNext = true;
                 } else {
                     mAddressbook.setParentNo(addressBook.getPeopleNo());
