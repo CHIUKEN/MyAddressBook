@@ -53,6 +53,7 @@ public class ActGridTagSortSetting extends Activity {
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
 
         setContentView(R.layout.activity_act_grid_tag_sort_setting);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         mGridView = (DynamicGridView) findViewById(R.id.dynamic_grid);
 
         tagList = AppController.getInstance().getDaofManger().getAllTag();
@@ -203,6 +204,9 @@ public class ActGridTagSortSetting extends Activity {
             AppController.getInstance().getDaofManger().updateTagSort(tagList);
             finish();
             return true;
+        }
+        if(id==android.R.id.home){
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
